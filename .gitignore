@@ -1,0 +1,14 @@
+# PyCharm
+.idea/
+
+# Visual Studio Code
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# virtualenv
+venv/
+
+# PyInstaller
+build/
+dist/

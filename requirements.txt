@@ -1,0 +1,11 @@
+# Base game library
+pygame>=1.9.4
+
+# Support for Tiled maps
+# pytmx>=3.21.6
+
+# Bobbing/easing/transition/etc animations
+# pytweening>=1.0.3
+
+# Persistent file storage
+# appdirs>=1.4.3

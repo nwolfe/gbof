@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="16" height="15" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="24">
+ <tileset firstgid="1" source="sample_level.tsx"/>
+ <imagelayer id="2" name="Background">
+	 <image source="../img/backdrop.png" width="256" height="240"/>
+ </imagelayer>
+ <layer id="1" name="Tile Layer 1" width="16" height="15">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,2,2,2,0,0,0,2,2,2,0,0,0,0,0,
+0,0,9,0,0,0,0,0,0,0,0,0,0,0,0,0,
+33,34,35,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+2,2,2,2,0,0,2,2,2,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,6,7,33,34,35,
+0,0,0,0,0,0,0,0,0,0,6,7,0,0,0,0,
+0,0,0,0,0,0,0,0,0,6,7,0,0,0,0,0,
+0,0,0,0,0,0,0,0,6,7,0,0,0,0,0,0,
+1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+</data>
+ </layer>
+ <objectgroup id="7" name="Player">
+  <object id="20" name="player" x="16" y="192" width="16" height="32"/>
+  <object id="21" name="baddie" x="144" y="32" width="16" height="32"/>
+  <object id="22" name="baddie" x="224" y="128" width="16" height="32"/>
+  <object id="23" name="baddie" x="16" y="112" width="16" height="32"/>
+ </objectgroup>
+ <objectgroup id="6" name="objects">
+  <object id="1" name="ground" x="-0.333333" y="224.25" width="257" height="16.0833"/>
+  <object id="5" name="ground" x="0.106061" y="144.106" width="63.9091" height="15.5151"/>
+  <object id="6" name="ground" x="96.0455" y="144.242" width="48.0909" height="15.5151"/>
+  <object id="7" name="ground" x="48" y="64" width="32.0341" height="16"/>
+  <object id="8" name="ground" x="32" y="64" width="16.2841" height="32"/>
+  <object id="10" name="ground" x="127.892" y="64.0606" width="48.125" height="15.6969"/>
+  <object id="18" name="stairs_l" x="141.667" y="160" width="66.3333" height="64"/>
+  <object id="13" name="platform" x="208" y="160" width="48.125" height="8.25"/>
+  <object id="14" name="platform" x="0" y="96" width="48.125" height="8.25"/>
+ </objectgroup>
+</map>

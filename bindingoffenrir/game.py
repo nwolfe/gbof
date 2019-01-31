@@ -50,18 +50,16 @@ class Game:
     def _load_data(self):
         self.map = TiledMap(resources.map(settings.SAMPLE_LEVEL))
         self.player_image = load_image(settings.PLAYER_IMAGE,
-                                       scale=(settings.TILESIZE,
-                                              settings.TILESIZE * 2))
+                                       scale=settings.SPRITE_SCALE)
         self.enemy_image = load_image(settings.ENEMY_IMAGE,
-                                      scale=(settings.TILESIZE,
-                                             settings.TILESIZE * 2))
+                                      scale=settings.SPRITE_SCALE)
 
     def new(self):
         self.all_sprites = pg.sprite.Group()
         self.baddies = pg.sprite.Group()
         self.paused = False
         self.map_image = self.map.make_map(self)
-        self.map_image = pg.transform.scale(self.map_image, settings.SCALE)
+        self.map_image = pg.transform.scale(self.map_image, settings.MAX_SCALE)
         self.map_rect = self.map_image.get_rect()
         self._create_tilemap_objects()
 

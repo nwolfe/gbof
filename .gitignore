@@ -1,3 +1,6 @@
+# Python compiled
+__pycache__/
+
 # PyCharm
 .idea/
 

@@ -1,13 +1,8 @@
-import os
-import sys
-import pygame as pg
-# from bindingoffenrir.settings import *
-# from bindingoffenrir.sprites import *
+import bindingoffenrir.game as game
 
-# Support running from single .exe (via PyInstaller)
-if getattr(sys, 'frozen', False):
-    os.chdir(sys._MEIPASS)
-
-RESOURCE_DIR = os.path.join(os.getcwd(), 'resources')
-IMG_DIR = os.path.join(RESOURCE_DIR, 'img')
-SND_DIR = os.path.join(RESOURCE_DIR, 'snd')
+g = game.Game()
+g.show_start_screen()
+while True:
+    g.new()
+    g.run()
+    g.show_gameover_screen()

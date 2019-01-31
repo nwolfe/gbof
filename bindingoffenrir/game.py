@@ -3,6 +3,7 @@ import pygame as pg
 import bindingoffenrir.settings as settings
 import bindingoffenrir.resources as resources
 from bindingoffenrir.tilemap import TiledMap
+from bindingoffenrir.sprites import Player
 
 
 def load_image(filename, scale=None):
@@ -33,6 +34,7 @@ class Game:
         self.dt = None
 
         # Declarations only; see #new()
+        self.player = None
         self.all_sprites = None
         self.paused = None
         self.map_image = None
@@ -46,9 +48,10 @@ class Game:
 
     def _load_data(self):
         self.map = TiledMap(resources.map(settings.SAMPLE_LEVEL))
-        self.player_image = load_image(settings.PLAYER_IMAGE)
+        self.player_image = load_image(settings.PLAYER_IMAGE,
+                                       scale=(settings.TILESIZE,
+                                              settings.TILESIZE * 2))
         self.enemy_image = load_image(settings.ENEMY_IMAGE)
-        # self.bgimg = load_image('backdrop.png')#, scale=settings.SCALE)
 
     def new(self):
         self.all_sprites = pg.sprite.Group()
@@ -56,6 +59,15 @@ class Game:
         self.map_image = self.map.make_map(self)
         self.map_image = pg.transform.scale(self.map_image, settings.SCALE)
         self.map_rect = self.map_image.get_rect()
+        self._create_tilemap_objects()
+
+    def _create_tilemap_objects(self):
+        for obj in self.map.tm.objects:
+            obj
+            if obj.name == 'player':
+                x = obj.x * 4
+                y = obj.y * 4
+                self.player = Player(self, x, y)
 
     def run(self):
         # pg.mixer_music.play(loops=-1)
@@ -86,14 +98,17 @@ class Game:
         pg.display.set_caption("{} (FPS {:.2f})".format(
             settings.TITLE, self.clock.get_fps()))
 
-        # self.screen.fill(settings.BGCOLOR)
+        self.screen.fill(settings.BGCOLOR)
         # self.screen.blit(self.bgimg, (0, 0))
         self.screen.blit(self.map_image, self.map_rect)
+        self.all_sprites.draw(self.screen)
 
         if self.draw_debug:
             # Draw outlines around all the collidable things, etc
             self._draw_grid()
-            pass
+            for s in self.all_sprites:
+                if hasattr(s, 'rect'):
+                    pg.draw.rect(self.screen, settings.CYAN, s.rect, 1)
 
         if self.paused:
             self.screen.blit(self.dim_screen, (0, 0))

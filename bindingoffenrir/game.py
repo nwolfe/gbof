@@ -3,7 +3,7 @@ import pygame as pg
 import bindingoffenrir.settings as settings
 import bindingoffenrir.resources as resources
 from bindingoffenrir.tilemap import TiledMap
-from bindingoffenrir.sprites import Player
+from bindingoffenrir.sprites import Player, Baddie
 
 
 def load_image(filename, scale=None):
@@ -36,6 +36,7 @@ class Game:
         # Declarations only; see #new()
         self.player = None
         self.all_sprites = None
+        self.baddies = None
         self.paused = None
         self.map_image = None
         self.map_rect = None
@@ -51,10 +52,13 @@ class Game:
         self.player_image = load_image(settings.PLAYER_IMAGE,
                                        scale=(settings.TILESIZE,
                                               settings.TILESIZE * 2))
-        self.enemy_image = load_image(settings.ENEMY_IMAGE)
+        self.enemy_image = load_image(settings.ENEMY_IMAGE,
+                                      scale=(settings.TILESIZE,
+                                             settings.TILESIZE * 2))
 
     def new(self):
         self.all_sprites = pg.sprite.Group()
+        self.baddies = pg.sprite.Group()
         self.paused = False
         self.map_image = self.map.make_map(self)
         self.map_image = pg.transform.scale(self.map_image, settings.SCALE)
@@ -63,11 +67,12 @@ class Game:
 
     def _create_tilemap_objects(self):
         for obj in self.map.tm.objects:
-            obj
+            obj.x *= settings.SCALE_FACTOR
+            obj.y *= settings.SCALE_FACTOR
             if obj.name == 'player':
-                x = obj.x * 4
-                y = obj.y * 4
-                self.player = Player(self, x, y)
+                self.player = Player(self, obj.x, obj.y)
+            elif obj.name == 'baddie':
+                Baddie(self, obj.x, obj.y)
 
     def run(self):
         # pg.mixer_music.play(loops=-1)

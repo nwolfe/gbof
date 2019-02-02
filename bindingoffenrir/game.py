@@ -3,13 +3,24 @@ import pygame as pg
 import bindingoffenrir.settings as settings
 import bindingoffenrir.resources as resources
 from bindingoffenrir.tilemap import TiledMap
-from bindingoffenrir.sprites import Player, Baddie
+from bindingoffenrir.sprites import Player, Baddie, Stairs
+
+
+def scale_image(image, scale):
+    if type(scale) is tuple:
+        return pg.transform.scale(image, scale)
+    elif type(scale) is int:
+        r = image.get_rect()
+        s = (r.width * scale, r.height * scale)
+        return pg.transform.scale(image, s)
+    else:
+        return image
 
 
 def load_image(filename, scale=None):
     i = pg.image.load(resources.image(filename)).convert_alpha()
     if scale:
-        return pg.transform.scale(i, scale)
+        return scale_image(i, scale)
     else:
         return i
 
@@ -33,15 +44,20 @@ class Game:
         self.clock = pg.time.Clock()
         self.dt = None
 
-        # Declarations only; see #new()
+        # Object groups [declarations only; see #new()]
         self.player = None
         self.all_sprites = None
         self.baddies = None
+        self.stairs = None
+
+        # Game state [declarations only; see #new()]
         self.paused = None
+
+        # Tilemap [declarations only; see #new()]
         self.map_image = None
         self.map_rect = None
 
-        # Resources from disk
+        # Resources from disk [see #_load_data()]
         self.map = None
         self.player_image = None
         self.enemy_image = None
@@ -50,16 +66,20 @@ class Game:
     def _load_data(self):
         self.map = TiledMap(resources.map(settings.SAMPLE_LEVEL))
         self.player_image = load_image(settings.PLAYER_IMAGE,
-                                       scale=settings.SPRITE_SCALE)
+                                       scale=settings.SCALE_FACTOR)
         self.enemy_image = load_image(settings.ENEMY_IMAGE,
-                                      scale=settings.SPRITE_SCALE)
+                                      scale=settings.SCALE_FACTOR)
 
     def new(self):
         self.all_sprites = pg.sprite.Group()
         self.baddies = pg.sprite.Group()
+        self.stairs = pg.sprite.Group()
         self.paused = False
         self.map_image = self.map.make_map(self)
-        self.map_image = pg.transform.scale(self.map_image, settings.MAX_SCALE)
+        r = self.map_image.get_rect()
+        self.map_image = pg.transform.scale(self.map_image,
+                                            (r.width * settings.SCALE_FACTOR,
+                                             r.height * settings.SCALE_FACTOR))
         self.map_rect = self.map_image.get_rect()
         self._create_tilemap_objects()
 
@@ -67,10 +87,14 @@ class Game:
         for obj in self.map.tm.objects:
             obj.x *= settings.SCALE_FACTOR
             obj.y *= settings.SCALE_FACTOR
+            obj.width *= settings.SCALE_FACTOR
+            obj.height *= settings.SCALE_FACTOR
             if obj.name == 'player':
                 self.player = Player(self, obj.x, obj.y)
             elif obj.name == 'baddie':
                 Baddie(self, obj.x, obj.y)
+            elif obj.name == 'stairs_r':
+                Stairs(self, obj.x, obj.y, obj.width, obj.height, 'right')
 
     def run(self):
         # pg.mixer_music.play(loops=-1)
@@ -109,9 +133,7 @@ class Game:
         if self.draw_debug:
             # Draw outlines around all the collidable things, etc
             self._draw_grid()
-            for s in self.all_sprites:
-                if hasattr(s, 'rect'):
-                    pg.draw.rect(self.screen, settings.CYAN, s.rect, 1)
+            self._draw_rects()
 
         if self.paused:
             self.screen.blit(self.dim_screen, (0, 0))
@@ -125,6 +147,13 @@ class Game:
         for y in range(0, settings.HEIGHT, settings.TILESIZE):
             pg.draw.line(self.screen, settings.LIGHTGREY,
                          (0, y), (settings.WIDTH, y))
+
+    def _draw_rects(self):
+        for s in self.all_sprites:
+            if hasattr(s, 'rect'):
+                pg.draw.rect(self.screen, settings.CYAN, s.rect, 1)
+        for s in self.stairs:
+            pg.draw.rect(self.screen, settings.CYAN, s.rect, 1)
 
     def quit(self):
         pg.quit()

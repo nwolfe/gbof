@@ -10,7 +10,6 @@ class Player(pg.sprite.Sprite):
         self.image = game.player_image
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
-        # self._tween_fn = tween.linear
         self._on_stairs = False
 
     def update(self):
@@ -54,9 +53,10 @@ class Player(pg.sprite.Sprite):
             if not self._on_stairs:
                 if stairs.direction == 'right':
                     if self.pos.x < stairs.pos.x:
-                        print('less than')
+                        # print('less than')
+                        pass
                     else:
-                        print('nope')
+                        # print('nope')
                         return
                 elif stairs.direction == 'left':
                     pass

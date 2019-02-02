@@ -2,7 +2,7 @@ import sys
 import pygame as pg
 import bindingoffenrir.settings as settings
 import bindingoffenrir.resources as resources
-from bindingoffenrir.tilemap import TiledMap
+from bindingoffenrir.tilemap import TiledMap, Camera
 from bindingoffenrir.sprites import Player, Baddie, Stairs
 
 
@@ -56,6 +56,7 @@ class Game:
         # Tilemap [declarations only; see #new()]
         self.map_image = None
         self.map_rect = None
+        self.camera = None
 
         # Resources from disk [see #_load_data()]
         self.map = None
@@ -64,7 +65,8 @@ class Game:
         self._load_data()
 
     def _load_data(self):
-        self.map = TiledMap(resources.map(settings.SAMPLE_LEVEL))
+        self.map = TiledMap(resources.map(settings.SAMPLE_LEVEL),
+                            scale=settings.SCALE_FACTOR)
         self.player_image = load_image(settings.PLAYER_IMAGE,
                                        scale=settings.SCALE_FACTOR)
         self.enemy_image = load_image(settings.ENEMY_IMAGE,
@@ -76,11 +78,8 @@ class Game:
         self.stairs = pg.sprite.Group()
         self.paused = False
         self.map_image = self.map.make_map(self)
-        r = self.map_image.get_rect()
-        self.map_image = pg.transform.scale(self.map_image,
-                                            (r.width * settings.SCALE_FACTOR,
-                                             r.height * settings.SCALE_FACTOR))
         self.map_rect = self.map_image.get_rect()
+        self.camera = Camera(self.map.width, self.map.height)
         self._create_tilemap_objects()
 
     def _create_tilemap_objects(self):
@@ -120,6 +119,7 @@ class Game:
 
     def update(self):
         self.all_sprites.update()
+        self.camera.update(self.player)
 
     def draw(self):
         pg.display.set_caption("{} (FPS {:.2f})".format(
@@ -127,8 +127,10 @@ class Game:
 
         self.screen.fill(settings.BGCOLOR)
         # self.screen.blit(self.bgimg, (0, 0))
-        self.screen.blit(self.map_image, self.map_rect)
-        self.all_sprites.draw(self.screen)
+        self.screen.blit(self.map_image, self.camera.apply_rect(self.map_rect))
+        # self.all_sprites.draw(self.screen)
+        for sprite in self.all_sprites:
+            self.screen.blit(sprite.image, self.camera.apply(sprite))
 
         if self.draw_debug:
             # Draw outlines around all the collidable things, etc
@@ -151,9 +153,11 @@ class Game:
     def _draw_rects(self):
         for s in self.all_sprites:
             if hasattr(s, 'rect'):
-                pg.draw.rect(self.screen, settings.CYAN, s.rect, 1)
+                pg.draw.rect(self.screen, settings.CYAN,
+                             self.camera.apply_rect(s.rect), 1)
         for s in self.stairs:
-            pg.draw.rect(self.screen, settings.CYAN, s.rect, 1)
+            pg.draw.rect(self.screen, settings.CYAN,
+                         self.camera.apply_rect(s.rect), 1)
 
     def quit(self):
         pg.quit()

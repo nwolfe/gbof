@@ -160,11 +160,17 @@ class Game:
     def _draw_rects(self):
         for s in self.all_sprites:
             if hasattr(s, 'rect'):
-                pg.draw.rect(self.screen, settings.CYAN,
-                             self.camera.apply_rect(s.rect), 1)
+                rect = self.camera.apply_rect(s.rect)
+                pg.draw.rect(self.screen, settings.CYAN, rect, 1)
+                pg.draw.circle(self.screen, settings.RED, (rect.x, rect.y), 3)
+                pg.draw.circle(self.screen, settings.GREEN,
+                               (rect.topleft[0], rect.topleft[1]), 3)
         for s in self.stairs:
-            pg.draw.rect(self.screen, settings.CYAN,
-                         self.camera.apply_rect(s.rect), 1)
+            rect = self.camera.apply_rect(s.rect)
+            pg.draw.rect(self.screen, settings.CYAN, rect, 1)
+            pg.draw.circle(self.screen, settings.RED, (rect.x, rect.y), 3)
+            pg.draw.circle(self.screen, settings.GREEN,
+                           (rect.topleft[0], rect.topleft[1]), 3)
 
     def quit(self):
         pg.quit()

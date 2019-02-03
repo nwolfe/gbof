@@ -81,7 +81,7 @@ class Player(pg.sprite.Sprite):
         self.pos = pg.Vector2(x, y)
         self.image = game.player_images[0]
         self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+        self.rect.topleft = self.pos
         self._on_stairs = False
 
     def update(self):
@@ -109,8 +109,7 @@ class Player(pg.sprite.Sprite):
             self._go_up_stairs()
         if keys[pg.K_DOWN] or keys[pg.K_s]:
             # go down stairs/ladder; through platform
-            if not self._on_stairs:
-                pass
+            self._go_down_stairs()
         if keys[pg.K_SPACE]:
             # jump up
             if not self._on_stairs:
@@ -134,8 +133,29 @@ class Player(pg.sprite.Sprite):
                 self.pos.x += settings.PLAYER_STAIR_SPEED
             elif stairs.direction == 'left':
                 self.pos.x -= settings.PLAYER_STAIR_SPEED
-            self.rect.x = self.pos.x
-            self.rect.y = self.pos.y
+            self.rect.topleft = self.pos
+
+    def _go_down_stairs(self):
+        self.rect.y += 5
+        stairs = pg.sprite.spritecollideany(self, self.game.stairs)
+        self.rect.y -= 5
+        if stairs:
+            # Only go down stairs if you're near the top of them
+            if not self._on_stairs:
+                if stairs.direction == 'right':
+                    x = stairs.pos.x + stairs.rect.width - self.rect.width
+                    if self.pos.x <= x:
+                        return
+                elif stairs.direction == 'left':
+                    if self.pos.x >= stairs.pos.x:
+                        return
+            self._on_stairs = True
+            self.pos.y += settings.PLAYER_STAIR_SPEED
+            if stairs.direction == 'right':
+                self.pos.x -= settings.PLAYER_STAIR_SPEED
+            elif stairs.direction == 'left':
+                self.pos.x += settings.PLAYER_STAIR_SPEED
+            self.rect.topleft = self.pos
 
 
 class Baddie(pg.sprite.Sprite):
@@ -153,5 +173,5 @@ class Stairs(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, game.stairs)
         self.pos = pg.Vector2(x, y)
         self.rect = pg.rect.Rect(x, y, width, height)
-        self.rect.topleft = (x, y)
+        self.rect.topleft = self.pos
         self.direction = direction

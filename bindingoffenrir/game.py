@@ -98,6 +98,9 @@ class Game:
             elif obj.name == 'stairs_r':
                 sprites.Stairs(self, obj.x, obj.y,
                                obj.width, obj.height, 'right')
+            elif obj.name == 'stairs_l':
+                sprites.Stairs(self, obj.x, obj.y,
+                               obj.width, obj.height, 'left')
 
     def run(self):
         # pg.mixer_music.play(loops=-1)

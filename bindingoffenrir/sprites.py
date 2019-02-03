@@ -111,12 +111,10 @@ class Player(pg.sprite.Sprite):
             # go down stairs/ladder; through platform
             if not self._on_stairs:
                 pass
-            pass
         if keys[pg.K_SPACE]:
             # jump up
             if not self._on_stairs:
                 pass
-            pass
 
     def _go_up_stairs(self):
         stairs = pg.sprite.spritecollideany(self, self.game.stairs)
@@ -124,18 +122,12 @@ class Player(pg.sprite.Sprite):
             # Only go up stairs if you're near the base of them
             if not self._on_stairs:
                 if stairs.direction == 'right':
-                    if self.pos.x < stairs.pos.x:
-                        # print('less than')
-                        pass
-                    else:
-                        # print('nope')
+                    if self.pos.x >= stairs.pos.x:
                         return
                 elif stairs.direction == 'left':
-                    pass
-            # print(stairs.__dict__)
-            # print('stairs: %s' % stairs.pos.x)
-            # print(self.__dict__)
-            # print('player: %s' % self.pos.x)
+                    x = stairs.pos.x + stairs.rect.width - self.rect.width
+                    if self.pos.x <= x:
+                        return
             self._on_stairs = True
             self.pos.y -= settings.PLAYER_STAIR_SPEED
             if stairs.direction == 'right':
@@ -161,4 +153,5 @@ class Stairs(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, game.stairs)
         self.pos = pg.Vector2(x, y)
         self.rect = pg.rect.Rect(x, y, width, height)
+        self.rect.topleft = (x, y)
         self.direction = direction

@@ -36,5 +36,5 @@ ENEMY_IMAGE = 'baddie_sprite.png'
 SAMPLE_LEVEL = 'sample_level.tmx'
 
 # Player settings
-PLAYER_SPEED = 5
-PLAYER_STAIR_SPEED = PLAYER_SPEED / 2
+PLAYER_ACC = 1  # 0.5
+PLAYER_FRICTION = 0.2  # 0.12

@@ -8,6 +8,8 @@ RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 LIGHTBLUE = (0, 155, 155)
 CYAN = (0, 255, 255)
+# TRANSPARENT = (215, 123, 186) #Hot Pink (alpha 255)
+TRANSPARENT = BLACK
 
 # game settings
 # WIDTH = 1024   # 16 * 64 or 32 * 32 or 64 * 16
@@ -24,7 +26,10 @@ GRIDWIDTH = WIDTH / TILESIZE
 GRIDHEIGHT = HEIGHT / TILESIZE
 
 # Images
-PLAYER_IMAGE = 'player_sprite.png'
+PLAYER_SPRITESHEET = 'player_sheet.png'
+PLAYER_MOVE_IMAGES = [
+    'step1'
+]
 ENEMY_IMAGE = 'baddie_sprite.png'
 
 # Levels

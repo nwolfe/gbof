@@ -2,8 +2,8 @@ import sys
 import pygame as pg
 import bindingoffenrir.settings as settings
 import bindingoffenrir.resources as resources
+import bindingoffenrir.sprites as sprites
 from bindingoffenrir.tilemap import TiledMap, Camera
-from bindingoffenrir.sprites import Player, Baddie, Stairs
 
 
 def scale_image(image, scale):
@@ -60,15 +60,18 @@ class Game:
 
         # Resources from disk [see #_load_data()]
         self.map = None
-        self.player_image = None
+        self.spritesheet = None
+        self.player_images = None
         self.enemy_image = None
         self._load_data()
 
     def _load_data(self):
         self.map = TiledMap(resources.map(settings.SAMPLE_LEVEL),
                             scale=settings.SCALE_FACTOR)
-        self.player_image = load_image(settings.PLAYER_IMAGE,
-                                       scale=settings.SCALE_FACTOR)
+        self.spritesheet = sprites.Spritesheet(
+            resources.image(settings.PLAYER_SPRITESHEET))
+        self.player_images = self.spritesheet.get_images(
+            settings.PLAYER_MOVE_IMAGES, scale=settings.SCALE_FACTOR)
         self.enemy_image = load_image(settings.ENEMY_IMAGE,
                                       scale=settings.SCALE_FACTOR)
 
@@ -89,11 +92,12 @@ class Game:
             obj.width *= settings.SCALE_FACTOR
             obj.height *= settings.SCALE_FACTOR
             if obj.name == 'player':
-                self.player = Player(self, obj.x, obj.y)
+                self.player = sprites.Player(self, obj.x, obj.y)
             elif obj.name == 'baddie':
-                Baddie(self, obj.x, obj.y)
+                sprites.Baddie(self, obj.x, obj.y)
             elif obj.name == 'stairs_r':
-                Stairs(self, obj.x, obj.y, obj.width, obj.height, 'right')
+                sprites.Stairs(self, obj.x, obj.y,
+                               obj.width, obj.height, 'right')
 
     def run(self):
         # pg.mixer_music.play(loops=-1)

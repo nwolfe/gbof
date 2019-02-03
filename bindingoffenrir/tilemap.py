@@ -16,7 +16,7 @@ class TiledMap:
     def make_map(self, game):
         s = pg.Surface((self.width / self.scale, self.height / self.scale))
         self._render(s)
-        s.set_colorkey(settings.BLACK)
+        s.set_colorkey(settings.TRANSPARENT)
         if self.scale > 1:
             r = s.get_rect()
             s = pg.transform.scale(s, (r.width * self.scale,

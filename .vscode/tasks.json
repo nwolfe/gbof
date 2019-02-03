@@ -39,6 +39,13 @@
             "command": "${workspaceFolder}/dist/${workspaceFolderBasename}.exe",
             "group": "build",
             "problemMatcher": []
+        },
+        {
+            "label": "resources",
+            "type": "process",
+            "command": "${workspaceFolder}/dev/cpr.cmd",
+            "group": "build",
+            "problemMatcher": []
         }
     ]
 }

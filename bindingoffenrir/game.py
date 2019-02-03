@@ -62,7 +62,8 @@ class Game:
         self.map = None
         self.spritesheet = None
         self.player_images = None
-        self.enemy_image = None
+        self.enemy_image_r = None
+        self.enemy_image_l = None
         self._load_data()
 
     def _load_data(self):
@@ -72,8 +73,9 @@ class Game:
             resources.image(settings.PLAYER_SPRITESHEET))
         self.player_images = self.spritesheet.get_images(
             settings.PLAYER_MOVE_IMAGES, scale=settings.SCALE_FACTOR)
-        self.enemy_image = load_image(settings.ENEMY_IMAGE,
-                                      scale=settings.SCALE_FACTOR)
+        self.enemy_image_r = load_image(settings.ENEMY_IMAGE,
+                                        scale=settings.SCALE_FACTOR)
+        self.enemy_image_l = pg.transform.flip(self.enemy_image_r, True, False)
 
     def new(self):
         self.all_sprites = pg.sprite.Group()
@@ -93,8 +95,10 @@ class Game:
             obj.height *= settings.SCALE_FACTOR
             if obj.name == 'player':
                 self.player = sprites.Player(self, obj.x, obj.y)
-            elif obj.name == 'baddie':
-                sprites.Baddie(self, obj.x, obj.y)
+            elif obj.name == 'baddie_r':
+                sprites.Baddie(self, obj.x, obj.y, 'right')
+            elif obj.name == 'baddie_l':
+                sprites.Baddie(self, obj.x, obj.y, 'left')
             elif obj.name == 'stairs_r':
                 sprites.Stairs(self, obj.x, obj.y,
                                obj.width, obj.height, 'right')

@@ -49,6 +49,7 @@ class Game:
         self.all_sprites = None
         self.baddies = None
         self.stairs = None
+        self.ground = None
 
         # Game state [declarations only; see #new()]
         self.paused = None
@@ -81,6 +82,7 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.baddies = pg.sprite.Group()
         self.stairs = pg.sprite.Group()
+        self.ground = pg.sprite.Group()
         self.paused = False
         self.map_image = self.map.make_map(self)
         self.map_rect = self.map_image.get_rect()
@@ -93,7 +95,9 @@ class Game:
             obj.y *= settings.SCALE_FACTOR
             obj.width *= settings.SCALE_FACTOR
             obj.height *= settings.SCALE_FACTOR
-            if obj.name == 'player':
+            if obj.name == 'ground':
+                sprites.Ground(self, obj.x, obj.y, obj.width, obj.height)
+            elif obj.name == 'player':
                 self.player = sprites.Player(self, obj.x, obj.y)
             elif obj.name == 'baddie_r':
                 sprites.Baddie(self, obj.x, obj.y, 'right')
@@ -132,6 +136,15 @@ class Game:
         self.all_sprites.update()
         self.camera.update(self.player)
 
+        # Player hits ground
+        hit = pg.sprite.spritecollideany(self.player, self.ground)
+        if hit:
+            self.player.pos.y = hit.rect.top - self.player.rect.height
+            self.player.vel.y = 0
+            # Put player one pixel away so doesn't collide with
+            # ground again and cause a visual jittering effect
+            self.player.pos.y += 1
+
     def draw(self):
         pg.display.set_caption("{} (FPS {:.2f})".format(
             settings.TITLE, self.clock.get_fps()))
@@ -145,15 +158,17 @@ class Game:
 
         if self.draw_debug:
             # Draw outlines around all the collidable things, etc
-            self._draw_grid()
-            self._draw_rects()
+            self._debug_draw_grid()
+            self._debug_draw_rects(self.all_sprites)
+            self._debug_draw_rects(self.stairs)
+            self._debug_draw_rects(self.ground)
 
         if self.paused:
             self.screen.blit(self.dim_screen, (0, 0))
 
         pg.display.flip()
 
-    def _draw_grid(self):
+    def _debug_draw_grid(self):
         for x in range(0, settings.WIDTH, settings.TILESIZE):
             pg.draw.line(self.screen, settings.LIGHTGREY,
                          (x, 0), (x, settings.HEIGHT))
@@ -161,20 +176,14 @@ class Game:
             pg.draw.line(self.screen, settings.LIGHTGREY,
                          (0, y), (settings.WIDTH, y))
 
-    def _draw_rects(self):
-        for s in self.all_sprites:
+    def _debug_draw_rects(self, group):
+        for s in group:
             if hasattr(s, 'rect'):
                 rect = self.camera.apply_rect(s.rect)
                 pg.draw.rect(self.screen, settings.CYAN, rect, 1)
                 pg.draw.circle(self.screen, settings.RED, (rect.x, rect.y), 3)
                 pg.draw.circle(self.screen, settings.GREEN,
                                (rect.topleft[0], rect.topleft[1]), 3)
-        for s in self.stairs:
-            rect = self.camera.apply_rect(s.rect)
-            pg.draw.rect(self.screen, settings.CYAN, rect, 1)
-            pg.draw.circle(self.screen, settings.RED, (rect.x, rect.y), 3)
-            pg.draw.circle(self.screen, settings.GREEN,
-                           (rect.topleft[0], rect.topleft[1]), 3)
 
     def quit(self):
         pg.quit()

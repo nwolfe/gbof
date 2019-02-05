@@ -22,13 +22,13 @@ class Player(pg.sprite.Sprite):
     def update(self):
         # Update logic moves the player by setting
         # the acceleration in the x,y directions
-        self.acc = pg.Vector2(0, 0)
+        self.acc = pg.Vector2(0, settings.PLAYER_GRAVITY)
 
         # Update player based on input
         self._handle_keys()
 
-        # Apply friction
-        self.acc += self.vel * -settings.PLAYER_FRICTION
+        # Apply friction, but only for left/right movement
+        self.acc.x += self.vel.x * -settings.PLAYER_FRICTION
 
         # Equations of motion
         self.vel += self.acc
@@ -82,11 +82,23 @@ class Player(pg.sprite.Sprite):
                     if self.pos.x <= x:
                         return
             self._on_stairs = True
-            self.acc.y = -settings.PLAYER_ACC * 0.5
+            # :::: BEGIN CONSTRUCTION ::::
+            # self.acc.y = -settings.PLAYER_ACC * 0.5
+            # self.acc.y = -4
+            # self.pos.y -= 5
+            STAIR_SPEED = 3.5
+            self.vel.y = -STAIR_SPEED
             if stairs.direction == 'right':
-                self.acc.x = settings.PLAYER_ACC * 0.5
+                # self.acc.x = settings.PLAYER_ACC * 0.5
+                # self.acc.x = 4
+                # self.pos.x += 5
+                self.vel.x = STAIR_SPEED
             elif stairs.direction == 'left':
-                self.acc.x = -settings.PLAYER_ACC * 0.5
+                # self.acc.x = -settings.PLAYER_ACC * 0.5
+                # self.acc.x = -4
+                # self.pos.x -= 5
+                self.vel.x = -STAIR_SPEED
+            # :::: END CONSTRUCTION ::::
 
     def _go_down_stairs(self):
         self.rect.y += 15

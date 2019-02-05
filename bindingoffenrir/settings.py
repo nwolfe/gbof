@@ -38,3 +38,4 @@ SAMPLE_LEVEL = 'sample_level.tmx'
 # Player settings
 PLAYER_ACC = 1  # 0.5
 PLAYER_FRICTION = 0.2  # 0.12
+PLAYER_GRAVITY = 0.5

@@ -143,7 +143,8 @@ class Game:
             self.player.vel.y = 0
             # Put player one pixel away so doesn't collide with
             # ground again and cause a visual jittering effect
-            self.player.pos.y += 1
+            # self.player.pos.y += 1
+            self.player.rect.topleft = self.player.pos
 
     def draw(self):
         pg.display.set_caption("{} (FPS {:.2f})".format(

@@ -96,7 +96,7 @@
   "size": { "w": 176, "h": 32 },
   "scale": "1",
   "frameTags": [
-   { "name": "idel", "from": 0, "to": 0, "direction": "forward" },
+   { "name": "idle", "from": 0, "to": 0, "direction": "forward" },
    { "name": "step1", "from": 1, "to": 1, "direction": "forward" },
    { "name": "step2", "from": 2, "to": 2, "direction": "forward" },
    { "name": "step3", "from": 3, "to": 3, "direction": "forward" },

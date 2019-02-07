@@ -28,7 +28,12 @@ GRIDHEIGHT = HEIGHT / TILESIZE
 # Images
 PLAYER_SPRITESHEET = 'player_sheet.png'
 PLAYER_MOVE_IMAGES = [
-    'step1'
+    'step1',
+    'step2',
+    'step3'
+]
+PLAYER_IDLE_IMAGES = [
+    'idle'
 ]
 ENEMY_IMAGE = 'baddie_sprite.png'
 

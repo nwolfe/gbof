@@ -62,7 +62,10 @@ class Game:
         # Resources from disk [see #_load_data()]
         self.map = None
         self.spritesheet = None
-        self.player_images = None
+        self.player_move_images_r = None
+        self.player_move_images_l = None
+        self.player_idle_images_r = None
+        self.player_idle_images_l = None
         self.enemy_image_r = None
         self.enemy_image_l = None
         self._load_data()
@@ -72,8 +75,16 @@ class Game:
                             scale=settings.SCALE_FACTOR)
         self.spritesheet = sprites.Spritesheet(
             resources.image(settings.PLAYER_SPRITESHEET))
-        self.player_images = self.spritesheet.get_images(
+        self.player_move_images_r = self.spritesheet.get_images(
             settings.PLAYER_MOVE_IMAGES, scale=settings.SCALE_FACTOR)
+        self.player_move_images_l = list(map(
+            lambda i: pg.transform.flip(i, True, False),
+            self.player_move_images_r))
+        self.player_idle_images_r = self.spritesheet.get_images(
+            settings.PLAYER_IDLE_IMAGES, scale=settings.SCALE_FACTOR)
+        self.player_idle_images_l = list(map(
+            lambda i: pg.transform.flip(i, True, False),
+            self.player_idle_images_r))
         self.enemy_image_r = load_image(settings.ENEMY_IMAGE,
                                         scale=settings.SCALE_FACTOR)
         self.enemy_image_l = pg.transform.flip(self.enemy_image_r, True, False)

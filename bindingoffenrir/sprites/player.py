@@ -82,23 +82,11 @@ class Player(pg.sprite.Sprite):
                     if self.pos.x <= x:
                         return
             self._on_stairs = True
-            # :::: BEGIN CONSTRUCTION ::::
-            # self.acc.y = -settings.PLAYER_ACC * 0.5
-            # self.acc.y = -4
-            # self.pos.y -= 5
-            STAIR_SPEED = 3.5
-            self.vel.y = -STAIR_SPEED
+            self.vel.y = -settings.PLAYER_STAIR_SPEED
             if stairs.direction == 'right':
-                # self.acc.x = settings.PLAYER_ACC * 0.5
-                # self.acc.x = 4
-                # self.pos.x += 5
-                self.vel.x = STAIR_SPEED
+                self.vel.x = settings.PLAYER_STAIR_SPEED
             elif stairs.direction == 'left':
-                # self.acc.x = -settings.PLAYER_ACC * 0.5
-                # self.acc.x = -4
-                # self.pos.x -= 5
-                self.vel.x = -STAIR_SPEED
-            # :::: END CONSTRUCTION ::::
+                self.vel.x = -settings.PLAYER_STAIR_SPEED
 
     def _go_down_stairs(self):
         self.rect.y += 15
@@ -115,11 +103,11 @@ class Player(pg.sprite.Sprite):
                     if self.pos.x >= stairs.pos.x:
                         return
             self._on_stairs = True
-            self.acc.y = settings.PLAYER_ACC * 0.5
+            self.vel.y = settings.PLAYER_STAIR_SPEED
             if stairs.direction == 'right':
-                self.acc.x = -settings.PLAYER_ACC * 0.5
+                self.vel.x = -settings.PLAYER_STAIR_SPEED
             elif stairs.direction == 'left':
-                self.acc.x = settings.PLAYER_ACC * 0.5
+                self.vel.x = settings.PLAYER_STAIR_SPEED
 
     def _jump(self):
         self.rect.x += 1

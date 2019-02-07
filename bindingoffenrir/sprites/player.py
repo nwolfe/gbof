@@ -67,7 +67,7 @@ class Player(pg.sprite.Sprite):
         if keys[pg.K_SPACE]:
             # jump up
             if not self._on_stairs:
-                pass
+                self._jump()
 
     def _go_up_stairs(self):
         stairs = pg.sprite.spritecollideany(self, self.game.stairs)
@@ -120,3 +120,10 @@ class Player(pg.sprite.Sprite):
                 self.acc.x = -settings.PLAYER_ACC * 0.5
             elif stairs.direction == 'left':
                 self.acc.x = settings.PLAYER_ACC * 0.5
+
+    def _jump(self):
+        self.rect.x += 1
+        hit = pg.sprite.spritecollideany(self, self.game.ground)
+        self.rect.x -= 1
+        if hit:
+            self.vel.y = -settings.PLAYER_JUMP

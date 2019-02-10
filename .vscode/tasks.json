@@ -46,6 +46,14 @@
             "command": "${workspaceFolder}/dev/cpr.cmd",
             "group": "build",
             "problemMatcher": []
+        },
+        {
+            "label": "upload",
+            "type": "process",
+            "command": "${config:python.pythonPath}",
+            "args": ["${workspaceFolder}/dev/upload.py"],
+            "group": "build",
+            "problemMatcher": []
         }
     ]
 }

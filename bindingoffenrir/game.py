@@ -102,10 +102,15 @@ class Game:
 
     def _create_tilemap_objects(self):
         for obj in self.map.tm.objects:
+            # Scale the object up
             obj.x *= settings.SCALE_FACTOR
             obj.y *= settings.SCALE_FACTOR
             obj.width *= settings.SCALE_FACTOR
             obj.height *= settings.SCALE_FACTOR
+            # Assume (x,y) is topleft and convert to center
+            obj.x += obj.width / 2
+            obj.y += obj.height / 2
+            # Construct all the entities
             if obj.name == 'ground':
                 sprites.Ground(self, obj.x, obj.y, obj.width, obj.height)
             elif obj.name == 'player':
@@ -150,7 +155,7 @@ class Game:
         # Player hits ground
         hit = pg.sprite.spritecollideany(self.player, self.ground)
         if hit:
-            self.player.pos.y = hit.rect.top - self.player.rect.height
+            self.player.pos.y = hit.rect.top - (self.player.rect.height / 2)
             self.player.vel.y = 0
             # Put player one pixel away so doesn't collide with
             # ground again and cause a visual jittering effect
@@ -192,9 +197,8 @@ class Game:
             if hasattr(s, 'rect'):
                 rect = self.camera.apply_rect(s.rect)
                 pg.draw.rect(self.screen, settings.CYAN, rect, 1)
-                pg.draw.circle(self.screen, settings.RED, (rect.x, rect.y), 3)
-                pg.draw.circle(self.screen, settings.GREEN,
-                               (rect.topleft[0], rect.topleft[1]), 3)
+                pg.draw.circle(self.screen, settings.RED,
+                               (rect.centerx, rect.centery), 3)
 
     def quit(self):
         pg.quit()

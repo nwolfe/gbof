@@ -20,7 +20,7 @@ class Player(pg.sprite.Sprite):
         self._facing = 'right'
 
         self.rect = self.image.get_rect()
-        self.rect.topleft = self.pos
+        self.rect.center = self.pos
         self._on_stairs = False
 
     def update(self):
@@ -43,13 +43,13 @@ class Player(pg.sprite.Sprite):
         self.pos += self.vel + (0.5 * self.acc)
 
         # Don't walk off edge of screen
-        if self.pos.x + self.rect.width >= self.game.map.width:
-            self.pos.x = self.game.map.width - self.rect.width
-        if self.pos.x < 0:
-            self.pos.x = 0
+        if self.pos.x + (self.rect.width / 2) >= self.game.map.width:
+            self.pos.x = self.game.map.width - (self.rect.width / 2)
+        if self.pos.x - (self.rect.width / 2) < 0:
+            self.pos.x = self.rect.width / 2
 
         # Update our rectangle with our new position
-        self.rect.topleft = self.pos
+        self.rect.center = self.pos
 
     def _handle_keys(self):
         # Restrict movement while going up/down stairs
@@ -150,8 +150,8 @@ class Player(pg.sprite.Sprite):
                     self._use_frame_from(self.game.player_idle_images_l)
 
     def _use_frame_from(self, images):
-        topleft = self.rect.topleft
+        center = self.rect.center
         self._current_frame = (self._current_frame + 1) % len(images)
         self.image = images[self._current_frame]
         self.rect = self.image.get_rect()
-        self.rect.topleft = topleft
+        self.rect.center = center

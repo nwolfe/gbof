@@ -11,5 +11,5 @@ class Baddie(pg.sprite.Sprite):
         elif direction == 'left':
             self.image = game.enemy_image_l.copy()
         self.rect = self.image.get_rect()
-        self.rect.topleft = self.pos
+        self.rect.center = self.pos
         self.direction = direction

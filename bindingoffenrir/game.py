@@ -90,7 +90,7 @@ class Game:
         self.enemy_image_l = pg.transform.flip(self.enemy_image_r, True, False)
 
     def new(self):
-        self.all_sprites = pg.sprite.Group()
+        self.all_sprites = pg.sprite.LayeredUpdates()
         self.baddies = pg.sprite.Group()
         self.stairs = pg.sprite.Group()
         self.ground = pg.sprite.Group()

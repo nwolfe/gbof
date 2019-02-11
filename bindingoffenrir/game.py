@@ -194,11 +194,13 @@ class Game:
 
     def _debug_draw_rects(self, group):
         for s in group:
-            if hasattr(s, 'rect'):
-                rect = self.camera.apply_rect(s.rect)
-                pg.draw.rect(self.screen, settings.CYAN, rect, 1)
-                pg.draw.circle(self.screen, settings.RED,
-                               (rect.centerx, rect.centery), 3)
+            rect = self.camera.apply_rect(s.rect)
+            pg.draw.rect(self.screen, settings.CYAN, rect, 1)
+            pg.draw.circle(self.screen, settings.RED, rect.center, 3)
+            pg.draw.circle(self.screen, settings.GREEN, rect.topleft, 3)
+            pg.draw.circle(self.screen, settings.GREEN, rect.topright, 3)
+            pg.draw.circle(self.screen, settings.GREEN, rect.bottomleft, 3)
+            pg.draw.circle(self.screen, settings.GREEN, rect.bottomright, 3)
 
     def quit(self):
         pg.quit()

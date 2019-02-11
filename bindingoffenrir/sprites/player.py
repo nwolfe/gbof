@@ -86,11 +86,10 @@ class Player(pg.sprite.Sprite):
             # Only go up stairs if you're near the base of them
             if not self._on_stairs:
                 if stairs.direction == 'right':
-                    if self.pos.x >= stairs.pos.x:
+                    if self.rect.right < stairs.rect.left:
                         return
                 elif stairs.direction == 'left':
-                    x = stairs.pos.x + stairs.rect.width - self.rect.width
-                    if self.pos.x <= x:
+                    if self.rect.left > stairs.rect.right:
                         return
             self._on_stairs = True
             self.vel.y = -settings.PLAYER_STAIR_SPEED
@@ -109,11 +108,10 @@ class Player(pg.sprite.Sprite):
             # Only go down stairs if you're near the top of them
             if not self._on_stairs:
                 if stairs.direction == 'right':
-                    x = stairs.pos.x + stairs.rect.width - self.rect.width
-                    if self.pos.x <= x:
+                    if self.rect.right < stairs.rect.left:
                         return
                 elif stairs.direction == 'left':
-                    if self.pos.x >= stairs.pos.x:
+                    if self.rect.left > stairs.rect.right:
                         return
             self._on_stairs = True
             self.vel.y = settings.PLAYER_STAIR_SPEED

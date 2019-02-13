@@ -169,6 +169,7 @@ class Game:
             self._debug_draw_rects(self.all_sprites)
             self._debug_draw_rects(self.stairs)
             self._debug_draw_rects(self.ground)
+            self._debug_draw_stairs()
 
         if self.paused:
             self.screen.blit(self.dim_screen, (0, 0))
@@ -192,6 +193,16 @@ class Game:
             pg.draw.circle(self.screen, settings.GREEN, rect.topright, 3)
             pg.draw.circle(self.screen, settings.GREEN, rect.bottomleft, 3)
             pg.draw.circle(self.screen, settings.GREEN, rect.bottomright, 3)
+
+    def _debug_draw_stairs(self):
+        for s in self.stairs:
+            rect = self.camera.apply_rect(s.rect)
+            if s.direction == 'right':
+                pg.draw.line(self.screen, settings.CYAN,
+                             rect.bottomleft, rect.topright)
+            elif s.direction == 'left':
+                pg.draw.line(self.screen, settings.CYAN,
+                             rect.topleft, rect.bottomright)
 
     def quit(self):
         pg.quit()

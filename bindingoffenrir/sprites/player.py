@@ -1,5 +1,6 @@
 import pygame as pg
 import bindingoffenrir.settings as settings
+from bindingoffenrir.sprites.collisions import collide_with_objects
 
 
 class Player(pg.sprite.Sprite):
@@ -48,6 +49,12 @@ class Player(pg.sprite.Sprite):
             self.pos.x = self.game.map.width - (self.rect.width / 2)
         if self.pos.x - (self.rect.width / 2) < 0:
             self.pos.x = self.rect.width / 2
+
+        # Check for collisions and move if necessary
+        self.rect.centerx = self.pos.x
+        collide_with_objects(self, self.game.ground, 'x')
+        self.rect.centery = self.pos.y
+        collide_with_objects(self, self.game.ground, 'y')
 
         # Update our rectangle with our new position
         self.rect.center = self.pos
@@ -123,9 +130,9 @@ class Player(pg.sprite.Sprite):
                 self._facing = 'left'
 
     def _jump(self):
-        self.rect.x += 1
+        self.rect.y += 1
         hit = pg.sprite.spritecollideany(self, self.game.ground)
-        self.rect.x -= 1
+        self.rect.y -= 1
         if hit:
             self.vel.y = -settings.PLAYER_JUMP
 

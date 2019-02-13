@@ -152,32 +152,6 @@ class Game:
         self.all_sprites.update()
         self.camera.update(self.player)
 
-        # Player hits ground
-        # Put player one pixel away so doesn't collide with
-        # ground again and cause a visual jittering effect
-        hit = pg.sprite.spritecollideany(self.player, self.ground)
-        if hit:
-            # Jumping up -- snap top to bottom
-            if self.player.vel.y < 0:
-                self.player.rect.top = hit.rect.bottom + 1
-                self.player.pos.y = self.player.rect.centery
-                self.player.vel.y = 0
-            # Falling down -- snap bottom to top
-            elif self.player.vel.y > 0:
-                self.player.rect.bottom = hit.rect.top + 1
-                self.player.pos.y = self.player.rect.centery
-                self.player.vel.y = 0
-            # # Moving right -- snap rightside to leftside
-            # if self.player.vel.x > 0:
-            #     self.player.rect.right = hit.rect.left - 1
-            #     self.player.pos.x = self.player.rect.centerx
-            #     self.player.vel.x = 0
-            # # Moving left -- snap leftside to rightside
-            # elif self.player.vel.x < 0:
-            #     self.player.rect.left = hit.rect.right + 1
-            #     self.player.pos.x = self.player.rect.centerx
-            #     self.player.vel.x = 0
-
     def draw(self):
         pg.display.set_caption("{} (FPS {:.2f})".format(
             settings.TITLE, self.clock.get_fps()))

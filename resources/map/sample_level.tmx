@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="80" height="15" tilewidth="16" tileheight="16" infinite="0" nextlayerid="33" nextobjectid="78">
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="80" height="15" tilewidth="16" tileheight="16" infinite="0" nextlayerid="33" nextobjectid="82">
  <tileset firstgid="1" source="tile_sheet.tsx"/>
  <tileset firstgid="226" source="background.tsx"/>
  <layer id="11" name="background" width="80" height="15">
@@ -211,23 +211,9 @@
  </objectgroup>
  <objectgroup id="14" name="stairs_r">
   <object id="57" name="stairs_r" x="944" y="64" width="32" height="32"/>
-  <object id="59" name="step" x="64" y="216" width="8" height="8"/>
-  <object id="60" name="step" x="72" y="208" width="8" height="8"/>
-  <object id="61" name="step" x="80" y="200" width="8" height="8"/>
-  <object id="62" name="step" x="88" y="192" width="8" height="8"/>
-  <object id="63" name="step" x="96" y="184" width="8" height="8"/>
-  <object id="64" name="step" x="104" y="176" width="8" height="8"/>
-  <object id="67" name="step" x="320" y="216" width="8" height="8"/>
-  <object id="68" name="step" x="328" y="208" width="8" height="8"/>
-  <object id="69" name="step" x="336" y="200" width="8" height="8"/>
-  <object id="70" name="step" x="344" y="192" width="8" height="8"/>
-  <object id="71" name="step" x="352" y="184" width="8" height="8"/>
-  <object id="72" name="step" x="360" y="176" width="8" height="8"/>
-  <object id="73" name="step" x="368" y="168" width="8" height="8"/>
-  <object id="74" name="step" x="376" y="160" width="8" height="8"/>
-  <object id="77" x="784.32" y="223.36">
-   <polyline points="-0.32,0.32 47.68,-47.36"/>
-  </object>
+  <object id="79" name="stairs_r" x="64" y="176" width="48" height="48"/>
+  <object id="80" name="stairs_r" x="320" y="160" width="64" height="64"/>
+  <object id="81" name="stairs_r" x="784" y="176" width="48" height="48"/>
  </objectgroup>
  <objectgroup id="9" name="player">
   <object id="13" name="player" x="32" y="192" width="16" height="32"/>

@@ -7,10 +7,13 @@ ASSETS = [('resources', 'resources')]
 CODE = [
     'bindingoffenrir/sprites/__init__.py',
     'bindingoffenrir/sprites/baddie.py',
+    'bindingoffenrir/sprites/collisions.py',
+    'bindingoffenrir/sprites/ground.py',
     'bindingoffenrir/sprites/player.py',
     'bindingoffenrir/sprites/spritesheet.py',
     'bindingoffenrir/sprites/stairs.py',
     'bindingoffenrir/game.py',
+    'bindingoffenrir/geometry.py',
     'bindingoffenrir/main.py',
     'bindingoffenrir/resources.py',
     'bindingoffenrir/settings.py',

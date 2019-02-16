@@ -30,6 +30,7 @@ class Game:
         # pg.mixer.pre_init(44100, -16, 1 2048)
         pg.init()
         pg.display.set_caption(settings.TITLE)
+        # pg.display.set_mode((settings.WIDTH, settings.HEIGHT), pg.FULLSCREEN)
         self.screen = pg.display.set_mode((settings.WIDTH, settings.HEIGHT))
         self.playing = False
 
@@ -197,10 +198,10 @@ class Game:
     def _debug_draw_stairs(self):
         for s in self.stairs:
             rect = self.camera.apply_rect(s.rect)
-            if s.direction == 'right':
+            if s.is_right:
                 pg.draw.line(self.screen, settings.CYAN,
                              rect.bottomleft, rect.topright)
-            elif s.direction == 'left':
+            elif s.is_left:
                 pg.draw.line(self.screen, settings.CYAN,
                              rect.topleft, rect.bottomright)
 

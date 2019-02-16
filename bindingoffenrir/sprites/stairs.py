@@ -7,3 +7,5 @@ class Stairs(pg.sprite.Sprite):
         self.rect = pg.rect.Rect(0, 0, width, height)
         self.rect.center = (x, y)
         self.direction = direction
+        self.is_right = direction == 'right'
+        self.is_left = direction == 'left'

@@ -1,6 +1,7 @@
 import pygame as pg
 import bindingoffenrir.settings as settings
 from bindingoffenrir.sprites.collisions import collide_with_objects
+from bindingoffenrir.sprites.collisions import collide_with_stairs
 
 
 class Player(pg.sprite.Sprite):
@@ -23,7 +24,7 @@ class Player(pg.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
-        self._on_stairs = False
+        self.on_stairs = False
 
     def update(self):
         self._animate()
@@ -56,85 +57,45 @@ class Player(pg.sprite.Sprite):
         self.rect.centery = self.pos.y
         collide_with_objects(self, self.game.ground, 'y')
 
-        # Update our rectangle with our new position
-        self.rect.center = self.pos
+        collide_with_stairs(self, self.game.stairs)
 
     def _handle_keys(self):
-        # Restrict movement while going up/down stairs
-        if self._on_stairs:
-            hit = pg.sprite.spritecollideany(self, self.game.stairs)
-            if not hit:
-                self._on_stairs = False
         keys = pg.key.get_pressed()
-        if keys[pg.K_LEFT] or keys[pg.K_a]:
+        left = keys[pg.K_LEFT] or keys[pg.K_a]
+        right = keys[pg.K_RIGHT] or keys[pg.K_d]
+        up = keys[pg.K_UP] or keys[pg.K_w]
+        # down = keys[pg.K_DOWN] or keys[pg.K_s]
+        if left:
             # move left/back
-            if not self._on_stairs:
-                self.acc.x = -settings.PLAYER_ACC
-                self._facing = 'left'
-        if keys[pg.K_RIGHT] or keys[pg.K_d]:
+            self.acc.x = -settings.PLAYER_ACC
+            self._facing = 'left'
+        if right:
             # move right/forward
-            if not self._on_stairs:
-                self.acc.x = settings.PLAYER_ACC
-                self._facing = 'right'
-        if keys[pg.K_UP] or keys[pg.K_w]:
-            # go up stairs/ladder
-            self._go_up_stairs()
-        if keys[pg.K_DOWN] or keys[pg.K_s]:
-            # go down stairs/ladder; through platform
-            self._go_down_stairs()
+            self.acc.x = settings.PLAYER_ACC
+            self._facing = 'right'
+        if up and (left or right):
+            # go up stairs
+            if self.on_stairs:
+                self.acc.y = -settings.PLAYER_ACC
+        # if down:
+        #     TODO only need DOWN when there are stairs that go through
+        #          a ground/platform tile. When the player walks across
+        #          the ground and is at the top of the stairs, if they
+        #          press down they should descend the stairs, otherwise
+        #          they should continue forward along the ground.
         if keys[pg.K_SPACE]:
             # jump up
-            if not self._on_stairs:
-                self._jump()
-
-    def _go_up_stairs(self):
-        stairs = pg.sprite.spritecollideany(self, self.game.stairs)
-        if stairs:
-            # Only go up stairs if you're near the base of them
-            if not self._on_stairs:
-                if stairs.direction == 'right':
-                    if self.rect.right < stairs.rect.left:
-                        return
-                elif stairs.direction == 'left':
-                    if self.rect.left > stairs.rect.right:
-                        return
-            self._on_stairs = True
-            self.vel.y = -settings.PLAYER_STAIR_SPEED
-            if stairs.direction == 'right':
-                self.vel.x = settings.PLAYER_STAIR_SPEED
-                self._facing = 'right'
-            elif stairs.direction == 'left':
-                self.vel.x = -settings.PLAYER_STAIR_SPEED
-                self._facing = 'left'
-
-    def _go_down_stairs(self):
-        self.rect.y += 15
-        stairs = pg.sprite.spritecollideany(self, self.game.stairs)
-        self.rect.y -= 15
-        if stairs:
-            # Only go down stairs if you're near the top of them
-            if not self._on_stairs:
-                if stairs.direction == 'right':
-                    if self.rect.right < stairs.rect.left:
-                        return
-                elif stairs.direction == 'left':
-                    if self.rect.left > stairs.rect.right:
-                        return
-            self._on_stairs = True
-            self.vel.y = settings.PLAYER_STAIR_SPEED
-            if stairs.direction == 'right':
-                self.vel.x = -settings.PLAYER_STAIR_SPEED
-                self._facing = 'right'
-            elif stairs.direction == 'left':
-                self.vel.x = settings.PLAYER_STAIR_SPEED
-                self._facing = 'left'
+            self._jump()
 
     def _jump(self):
-        self.rect.y += 1
-        hit = pg.sprite.spritecollideany(self, self.game.ground)
-        self.rect.y -= 1
-        if hit:
+        if self.on_stairs:
             self.vel.y = -settings.PLAYER_JUMP
+        else:
+            self.rect.y += 1
+            hit = pg.sprite.spritecollideany(self, self.game.ground)
+            self.rect.y -= 1
+            if hit:
+                self.vel.y = -settings.PLAYER_JUMP
 
     def _animate(self):
         now = pg.time.get_ticks()

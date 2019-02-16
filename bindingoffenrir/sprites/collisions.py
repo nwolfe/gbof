@@ -1,4 +1,5 @@
 import pygame as pg
+import bindingoffenrir.geometry as geometry
 
 
 def collide_with_objects(sprite, group, dir):
@@ -37,3 +38,39 @@ def collide_with_objects(sprite, group, dir):
                     sprite.rect.top = hit.rect.bottom
                     sprite.vel.y = 0
                     sprite.pos.y = sprite.rect.centery
+
+
+def collide_with_stairs(sprite, stairsgroup):
+    stairs = pg.sprite.spritecollideany(sprite, stairsgroup)
+    if not stairs:
+        sprite.on_stairs = False
+        return
+
+    if stairs.is_right:
+        p1 = sprite.rect.midbottom
+        p2 = sprite.rect.bottomright
+        p3 = stairs.rect.topright
+        p4 = stairs.rect.bottomleft
+        ip = geometry.calculateIntersectPoint(p1, p2, p3, p4)
+        if ip:
+            sprite.rect.bottomright = ip
+            sprite.pos = sprite.rect.center
+            sprite.vel.x = 0
+            sprite.vel.y = 0
+            sprite.on_stairs = True
+            return
+    elif stairs.is_left:
+        p1 = sprite.rect.bottomleft
+        p2 = sprite.rect.midbottom
+        p3 = stairs.rect.topleft
+        p4 = stairs.rect.bottomright
+        ip = geometry.calculateIntersectPoint(p1, p2, p3, p4)
+        if ip:
+            sprite.rect.bottomleft = ip
+            sprite.pos = sprite.rect.center
+            sprite.vel.x = 0
+            sprite.vel.y = 0
+            sprite.on_stairs = True
+            return
+
+    sprite.on_stairs = False

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="80" height="15" tilewidth="16" tileheight="16" infinite="0" nextlayerid="33" nextobjectid="82">
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="80" height="15" tilewidth="16" tileheight="16" infinite="0" nextlayerid="33" nextobjectid="83">
  <tileset firstgid="1" source="tile_sheet.tsx"/>
  <tileset firstgid="226" source="background.tsx"/>
  <layer id="11" name="background" width="80" height="15">
@@ -201,8 +201,9 @@
   <object id="42" name="ground" x="240" y="96" width="32" height="16"/>
   <object id="45" name="ground" x="240" y="160" width="240" height="16"/>
   <object id="46" name="ground" x="240" y="112" width="16" height="48"/>
-  <object id="48" name="ground" x="752" y="176" width="112" height="16"/>
+  <object id="48" name="ground" x="752" y="176" width="16" height="16"/>
   <object id="58" name="ground" x="208" y="112" width="16" height="16"/>
+  <object id="82" name="ground" x="832" y="176" width="32" height="16"/>
  </objectgroup>
  <objectgroup id="7" name="stairs_l">
   <object id="25" name="stairs_l" x="944" y="32" width="32" height="32"/>

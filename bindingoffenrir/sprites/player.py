@@ -25,7 +25,9 @@ class Player(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
         self.on_stairs = False
+
         self.jump_point = None
+        self._last_jump = 0
 
     def update(self):
         self._animate()
@@ -84,16 +86,23 @@ class Player(pg.sprite.Sprite):
             self._jump()
 
     def _jump(self):
+        now = pg.time.get_ticks()
         if self.on_stairs:
-            self.vel.y = -settings.PLAYER_JUMP
-            self.jump_point = self.rect.midbottom
-        else:
-            self.rect.y += 1
-            hit = pg.sprite.spritecollideany(self, self.game.ground)
-            self.rect.y -= 1
-            if hit:
-                self.vel.y = -settings.PLAYER_JUMP
+            if now - self._last_jump > settings.PLAYER_JUMP_COOLDOWN:
+                self._last_jump = now
+                self.vel.y = -settings.PLAYER_JUMP_HEIGHT
                 self.jump_point = self.rect.midbottom
+                self._last_jump = pg.time.get_ticks()
+        else:
+            if now - self._last_jump > settings.PLAYER_JUMP_COOLDOWN:
+                self.rect.y += 1
+                hit = pg.sprite.spritecollideany(self, self.game.ground)
+                self.rect.y -= 1
+                if hit:
+                    self._last_jump = now
+                    self.vel.y = -settings.PLAYER_JUMP_HEIGHT
+                    self.jump_point = self.rect.midbottom
+                    self._last_jump = pg.time.get_ticks()
 
     def _animate(self):
         now = pg.time.get_ticks()

@@ -63,26 +63,21 @@ class Player(pg.sprite.Sprite):
         keys = pg.key.get_pressed()
         left = keys[pg.K_LEFT] or keys[pg.K_a]
         right = keys[pg.K_RIGHT] or keys[pg.K_d]
-        up = keys[pg.K_UP] or keys[pg.K_w]
+        # up = keys[pg.K_UP] or keys[pg.K_w]
         # down = keys[pg.K_DOWN] or keys[pg.K_s]
         if left:
             # move left/back
             self.acc.x = -settings.PLAYER_ACC
             self._facing = 'left'
+            if self.on_stairs:
+                self.vel.y = -settings.PLAYER_STAIR_SPEED
         if right:
             # move right/forward
             self.acc.x = settings.PLAYER_ACC
             self._facing = 'right'
-        if up and (left or right):
-            # go up stairs
             if self.on_stairs:
-                self.acc.y = -settings.PLAYER_ACC
-        # if down:
-        #     TODO only need DOWN when there are stairs that go through
-        #          a ground/platform tile. When the player walks across
-        #          the ground and is at the top of the stairs, if they
-        #          press down they should descend the stairs, otherwise
-        #          they should continue forward along the ground.
+                self.vel.y = -settings.PLAYER_STAIR_SPEED
+
         if keys[pg.K_SPACE]:
             # jump up
             self._jump()

@@ -55,7 +55,6 @@ def collide_with_stairs(sprite, stairsgroup):
         if ip:
             sprite.rect.bottomright = ip
             sprite.pos = sprite.rect.center
-            sprite.vel.x = 0
             sprite.vel.y = 0
             sprite.on_stairs = True
             return
@@ -68,7 +67,6 @@ def collide_with_stairs(sprite, stairsgroup):
         if ip:
             sprite.rect.bottomleft = ip
             sprite.pos = sprite.rect.center
-            sprite.vel.x = 0
             sprite.vel.y = 0
             sprite.on_stairs = True
             return

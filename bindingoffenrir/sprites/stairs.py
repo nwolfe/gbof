@@ -9,3 +9,31 @@ class Stairs(pg.sprite.Sprite):
         self.direction = direction
         self.is_right = direction == 'right'
         self.is_left = direction == 'left'
+
+    def get_above_below_on(self, point):
+        """Tests where the point lies in relation to the diagonal
+        line of the stairs. Returns 'above', 'below', or 'on'."""
+        if self.is_right:
+            line_a, line_b = self.rect.bottomleft, self.rect.topright
+        elif self.is_left:
+            line_a, line_b = self.rect.bottomright, self.rect.topleft
+        xp = _cross_product(line_a, line_b, point)
+        if xp > 0:
+            return 'above'
+        elif xp < 0:
+            return 'below'
+        else:
+            return 'on'
+
+
+# if xp > 0: above line
+# if xp < 0: below line
+# if xp = 0: on line
+def _cross_product(line_a, line_b, point):
+    x1, y1 = line_a[0], line_a[1]
+    x2, y2 = line_b[0], line_b[1]
+    xA, yA = point[0], point[1]
+    v1 = pg.Vector2(x2 - x1, y2 - y1)
+    v2 = pg.Vector2(x2 - xA, y2 - yA)
+    xp = v1.x * v2.y - v1.y * v2.x
+    return xp

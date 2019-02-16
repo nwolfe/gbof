@@ -71,4 +71,4 @@ class Spritesheet:
         return self.get_image_at(*coords, scale)
 
     def get_images(self, names, scale=1):
-        return list(map(lambda i: self.get_image(i, scale), names))
+        return [self.get_image(i, scale) for i in names]

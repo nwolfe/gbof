@@ -78,14 +78,14 @@ class Game:
             resources.image(settings.PLAYER_SPRITESHEET))
         self.player_move_images_r = self.spritesheet.get_images(
             settings.PLAYER_MOVE_IMAGES, scale=settings.SCALE_FACTOR)
-        self.player_move_images_l = list(map(
-            lambda i: pg.transform.flip(i, True, False),
-            self.player_move_images_r))
+        self.player_move_images_l = [
+            pg.transform.flip(right_image, True, False)
+            for right_image in self.player_move_images_r]
         self.player_idle_images_r = self.spritesheet.get_images(
             settings.PLAYER_IDLE_IMAGES, scale=settings.SCALE_FACTOR)
-        self.player_idle_images_l = list(map(
-            lambda i: pg.transform.flip(i, True, False),
-            self.player_idle_images_r))
+        self.player_idle_images_l = [
+            pg.transform.flip(right_image, True, False)
+            for right_image in self.player_idle_images_r]
         self.enemy_image_r = load_image(settings.ENEMY_IMAGE,
                                         scale=settings.SCALE_FACTOR)
         self.enemy_image_l = pg.transform.flip(self.enemy_image_r, True, False)

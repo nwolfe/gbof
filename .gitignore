@@ -1,3 +1,6 @@
+# Build / version information generated in .spec file
+builddate
+
 # Python compiled
 __pycache__/
 

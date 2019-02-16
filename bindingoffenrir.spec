@@ -2,6 +2,15 @@
 #
 # To build executable: $ pyinstaller bindingoffenrir.spec
 
+
+# Write build / version information into executable.
+import os
+import datetime
+builddatefile = os.path.join('resources', 'builddate')
+with open(builddatefile, 'w') as f:
+    f.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+
 NAME = 'bindingoffenrir'
 ASSETS = [('resources', 'resources')]
 CODE = [

@@ -3,6 +3,7 @@ import pygame as pg
 import bindingoffenrir.settings as settings
 import bindingoffenrir.resources as resources
 import bindingoffenrir.sprites as sprites
+import bindingoffenrir.version as version
 from bindingoffenrir.tilemap import TiledMap, Camera
 
 
@@ -30,8 +31,9 @@ class Game:
         # pg.mixer.pre_init(44100, -16, 1 2048)
         pg.init()
         pg.display.set_caption(settings.TITLE)
-        # pg.display.set_mode((settings.WIDTH, settings.HEIGHT), pg.FULLSCREEN)
-        self.screen = pg.display.set_mode((settings.WIDTH, settings.HEIGHT))
+        self.screen = pg.display.set_mode(
+            # (settings.WIDTH, settings.HEIGHT), pg.FULLSCREEN)
+            (settings.WIDTH, settings.HEIGHT))
         self.playing = False
 
         # Debugging
@@ -171,11 +173,20 @@ class Game:
             self._debug_draw_rects(self.stairs)
             self._debug_draw_rects(self.ground)
             self._debug_draw_stairs()
+            self._debug_draw_version()
 
         if self.paused:
             self.screen.blit(self.dim_screen, (0, 0))
 
         pg.display.flip()
+
+    def _debug_draw_version(self):
+        builddate = "Built: %s" % version.BUILD_DATE
+        font = pg.font.SysFont('Arial', 16, bold=True)
+        surface = font.render(builddate, True, settings.GREEN)
+        rect = surface.get_rect()
+        rect.topleft = (0, 0)
+        self.screen.blit(surface, rect)
 
     def _debug_draw_grid(self):
         for x in range(0, settings.WIDTH, settings.TILESIZE):

@@ -2,6 +2,44 @@ import pygame as pg
 import bindingoffenrir.geometry as geometry
 
 
+# if xp > 0: above if right, below if left
+# if xp < 0: below if right, above if left
+# if xp = 0: on line
+def cross_product(line_a, line_b, point):
+    x1, y1 = line_a[0], line_a[1]
+    x2, y2 = line_b[0], line_b[1]
+    xA, yA = point[0], point[1]
+    v1 = pg.Vector2(x2 - x1, y2 - y1)
+    v2 = pg.Vector2(x2 - xA, y2 - yA)
+    xp = v1.x * v2.y - v1.y * v2.x
+    return xp
+
+
+def get_position_relative_to(point, stairs):
+    """Tests where the point lies in relation to the diagonal
+    line of the stairs. Returns 'above', 'below', or 'on'."""
+    if stairs.is_right:
+        line_a, line_b = stairs.rect.bottomleft, stairs.rect.topright
+        xp = cross_product(line_a, line_b, point)
+        if xp > 0:
+            return 'above'
+        elif xp < 0:
+            return 'below'
+        else:
+            return 'on'
+    elif stairs.is_left:
+        line_a, line_b = stairs.rect.bottomright, stairs.rect.topleft
+        xp = cross_product(line_a, line_b, point)
+        if xp > 0:
+            return 'below'
+        elif xp < 0:
+            return 'above'
+        else:
+            return 'on'
+    else:
+        return None
+
+
 def collide_with_objects(sprite, group, dir):
     if 'x' == dir:
         hit = pg.sprite.spritecollideany(sprite, group)
@@ -49,8 +87,8 @@ def collide_with_stairs(sprite, stairsgroup):
 
     # Let the sprite jump up through the stairs; don't snap to stairs
     if sprite.vel.y < 0 and sprite.jump_point:
-        pos = stairs.get_above_below_on(sprite.jump_point)
-        if pos == 'below':
+        pos = get_position_relative_to(sprite.jump_point, stairs)
+        if 'below' == pos:
             sprite.on_stairs = False
             return
 
@@ -58,7 +96,8 @@ def collide_with_stairs(sprite, stairsgroup):
     if stairs.is_right:
         # Check if corner is on the line
         corner_on = False
-        if 'on' == stairs.get_above_below_on(sprite.rect.bottomright):
+        pos = get_position_relative_to(sprite.rect.bottomright, stairs)
+        if 'on' == pos:
             corner_on = True
 
         # Calculate intersection, if any
@@ -82,7 +121,8 @@ def collide_with_stairs(sprite, stairsgroup):
     elif stairs.is_left:
         # Check if corner is on the line
         corner_on = False
-        if 'on' == stairs.get_above_below_on(sprite.rect.bottomleft):
+        pos = get_position_relative_to(sprite.rect.bottomleft, stairs)
+        if 'on' == pos:
             corner_on = True
 
         # Calculate intersection, if any

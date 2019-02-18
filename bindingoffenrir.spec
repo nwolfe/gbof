@@ -13,21 +13,7 @@ with open(builddatefile, 'w') as f:
 
 NAME = 'bindingoffenrir'
 ASSETS = [('resources', 'resources')]
-CODE = [
-    'bindingoffenrir/sprites/__init__.py',
-    'bindingoffenrir/sprites/baddie.py',
-    'bindingoffenrir/sprites/collisions.py',
-    'bindingoffenrir/sprites/ground.py',
-    'bindingoffenrir/sprites/player.py',
-    'bindingoffenrir/sprites/spritesheet.py',
-    'bindingoffenrir/sprites/stairs.py',
-    'bindingoffenrir/game.py',
-    'bindingoffenrir/geometry.py',
-    'bindingoffenrir/main.py',
-    'bindingoffenrir/resources.py',
-    'bindingoffenrir/settings.py',
-    'bindingoffenrir/tilemap.py'
-]
+CODE = ['bindingoffenrir/main.py']
 
 DEBUG = False
 CONSOLE = DEBUG

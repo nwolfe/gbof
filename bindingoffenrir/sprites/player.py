@@ -25,6 +25,7 @@ class Player(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
         self.on_stairs = False
+        self.stairs = None
 
         self.jump_point = None
         self._last_jump = 0
@@ -71,19 +72,43 @@ class Player(pg.sprite.Sprite):
         left = keys[pg.K_LEFT] or keys[pg.K_a]
         right = keys[pg.K_RIGHT] or keys[pg.K_d]
         # up = keys[pg.K_UP] or keys[pg.K_w]
-        # down = keys[pg.K_DOWN] or keys[pg.K_s]
+        down = keys[pg.K_DOWN] or keys[pg.K_s]
         if left:
             # move left/back
             self.acc.x = -settings.PLAYER_ACC
             self._facing = 'left'
+            # move up stairs by walking into them
             if self.on_stairs:
                 self.vel.y = -settings.PLAYER_STAIR_SPEED
         if right:
             # move right/forward
             self.acc.x = settings.PLAYER_ACC
             self._facing = 'right'
+            # move up stairs by walking into them
             if self.on_stairs:
                 self.vel.y = -settings.PLAYER_STAIR_SPEED
+        # if up:
+        #     if self._on_stairs:
+        #         if self.stairs.is_right:
+        #             target = pg.Vector2(self.stairs.rect.topright)
+        #             heading = target - self.rect.bottomright
+        #             heading.scale_to_length(settings.PLAYER_STAIR_SPEED)
+        #             self.vel = heading
+        #         elif self.stairs.is_left:
+        #             pass
+        if down:
+            # move down stairs
+            if self.on_stairs:
+                if self.stairs.is_right:
+                    target = pg.Vector2(self.stairs.rect.bottomleft)
+                    heading = target - self.rect.bottomright
+                    heading.scale_to_length(settings.PLAYER_STAIR_SPEED)
+                    self.vel = heading
+                elif self.stairs.is_left:
+                    target = pg.Vector2(self.stairs.rect.bottomright)
+                    heading = target - self.rect.bottomleft
+                    heading.scale_to_length(settings.PLAYER_STAIR_SPEED)
+                    self.vel = heading
 
         if keys[pg.K_SPACE]:
             # jump up

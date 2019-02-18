@@ -88,7 +88,8 @@ def draw_physics(game, group):
         game.screen.blit(surf, r)
 
         # On Stairs?
-        surf = font.render("On Stairs: %s" % s.on_stairs, True, color)
+        surf = font.render("On Stairs: %s (%s)" % (s.on_stairs, s.stairs),
+                           True, color)
         r = surf.get_rect()
         r.bottomleft = rect.topleft
         r.move_ip(0, size * -3)

@@ -83,6 +83,7 @@ def collide_with_stairs(sprite, stairsgroup):
     stairs = pg.sprite.spritecollideany(sprite, stairsgroup)
     if not stairs:
         sprite.on_stairs = False
+        sprite.stairs = None
         return
 
     # Let the sprite jump up through the stairs; don't snap to stairs
@@ -90,6 +91,7 @@ def collide_with_stairs(sprite, stairsgroup):
         pos = get_position_relative_to(sprite.jump_point, stairs)
         if 'below' == pos:
             sprite.on_stairs = False
+            sprite.stairs = None
             return
 
     # Snap bottom-right of sprite to diagonal stair line
@@ -116,6 +118,7 @@ def collide_with_stairs(sprite, stairsgroup):
             sprite.vel.y = 0
             sprite.jump_point = None
             sprite.on_stairs = True
+            sprite.stairs = stairs
             return
     # Snap bottom-left of sprite to diagonal stair line
     elif stairs.is_left:
@@ -141,6 +144,8 @@ def collide_with_stairs(sprite, stairsgroup):
             sprite.vel.y = 0
             sprite.jump_point = None
             sprite.on_stairs = True
+            sprite.stairs = stairs
             return
 
     sprite.on_stairs = False
+    sprite.stairs = None

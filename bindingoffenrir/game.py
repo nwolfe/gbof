@@ -3,7 +3,7 @@ import pygame as pg
 import bindingoffenrir.settings as settings
 import bindingoffenrir.resources as resources
 import bindingoffenrir.sprites as sprites
-import bindingoffenrir.version as version
+import bindingoffenrir.debug as debug
 from bindingoffenrir.tilemap import TiledMap, Camera
 
 
@@ -168,53 +168,17 @@ class Game:
 
         if self.draw_debug:
             # Draw outlines around all the collidable things, etc
-            self._debug_draw_grid()
-            self._debug_draw_rects(self.all_sprites)
-            self._debug_draw_rects(self.stairs)
-            self._debug_draw_rects(self.ground)
-            self._debug_draw_stairs()
-            self._debug_draw_version()
+            debug.draw_grid(self)
+            debug.draw_rects(self, self.all_sprites)
+            debug.draw_rects(self, self.stairs)
+            debug.draw_rects(self, self.ground)
+            debug.draw_stairs(self)
+            debug.draw_version(self)
 
         if self.paused:
             self.screen.blit(self.dim_screen, (0, 0))
 
         pg.display.flip()
-
-    def _debug_draw_version(self):
-        builddate = "Built: %s" % version.BUILD_DATE
-        font = pg.font.SysFont('Arial', 16, bold=True)
-        surface = font.render(builddate, True, settings.GREEN)
-        rect = surface.get_rect()
-        rect.topleft = (0, 0)
-        self.screen.blit(surface, rect)
-
-    def _debug_draw_grid(self):
-        for x in range(0, settings.WIDTH, settings.TILESIZE):
-            pg.draw.line(self.screen, settings.LIGHTGREY,
-                         (x, 0), (x, settings.HEIGHT))
-        for y in range(0, settings.HEIGHT, settings.TILESIZE):
-            pg.draw.line(self.screen, settings.LIGHTGREY,
-                         (0, y), (settings.WIDTH, y))
-
-    def _debug_draw_rects(self, group):
-        for s in group:
-            rect = self.camera.apply_rect(s.rect)
-            pg.draw.rect(self.screen, settings.CYAN, rect, 1)
-            pg.draw.circle(self.screen, settings.RED, rect.center, 3)
-            pg.draw.circle(self.screen, settings.GREEN, rect.topleft, 3)
-            pg.draw.circle(self.screen, settings.GREEN, rect.topright, 3)
-            pg.draw.circle(self.screen, settings.GREEN, rect.bottomleft, 3)
-            pg.draw.circle(self.screen, settings.GREEN, rect.bottomright, 3)
-
-    def _debug_draw_stairs(self):
-        for s in self.stairs:
-            rect = self.camera.apply_rect(s.rect)
-            if s.is_right:
-                pg.draw.line(self.screen, settings.CYAN,
-                             rect.bottomleft, rect.topright)
-            elif s.is_left:
-                pg.draw.line(self.screen, settings.CYAN,
-                             rect.topleft, rect.bottomright)
 
     def quit(self):
         pg.quit()

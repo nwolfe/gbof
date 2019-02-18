@@ -36,9 +36,6 @@ class Game:
             (settings.WIDTH, settings.HEIGHT))
         self.playing = False
 
-        # Debugging
-        self.draw_debug = False
-
         # Pausing
         self.dim_screen = pg.Surface(self.screen.get_size()).convert_alpha()
         self.dim_screen.fill((0, 0, 0, 180))
@@ -146,10 +143,16 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
-                if event.key == pg.K_h:
-                    self.draw_debug = not self.draw_debug
                 if event.key == pg.K_p:
                     self.paused = not self.paused
+                if event.key == pg.K_F1:
+                    debug.draw.grid = not debug.draw.grid
+                if event.key == pg.K_F2:
+                    debug.draw.hitboxes = not debug.draw.hitboxes
+                if event.key == pg.K_F3:
+                    debug.draw.physics = not debug.draw.physics
+                if event.key == pg.K_F4:
+                    debug.draw.version = not debug.draw.version
 
     def update(self):
         self.all_sprites.update()
@@ -166,14 +169,16 @@ class Game:
         for sprite in self.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
 
-        if self.draw_debug:
-            # Draw outlines around all the collidable things, etc
+        if debug.draw.grid:
             debug.draw_grid(self)
+        if debug.draw.hitboxes:
             debug.draw_rects(self, self.all_sprites)
             debug.draw_rects(self, self.stairs)
             debug.draw_rects(self, self.ground)
             debug.draw_stairs(self)
+        if debug.draw.version:
             debug.draw_version(self)
+        if debug.draw.physics:
             debug.draw_physics(self, [self.player])
 
         if self.paused:

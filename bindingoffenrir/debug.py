@@ -3,6 +3,17 @@ import bindingoffenrir.settings as settings
 import bindingoffenrir.version as version
 
 
+class _flags:
+    def __init__(self):
+        self.grid = False
+        self.hitboxes = False
+        self.physics = False
+        self.version = False
+
+
+draw = _flags()
+
+
 def draw_physics(game, group):
     size = 12
     font = pg.font.SysFont('Arial', size, bold=False)
@@ -35,6 +46,16 @@ def draw_physics(game, group):
         r = surf.get_rect()
         r.bottomleft = rect.topleft
         r = r.move(0, size * -3)
+        game.screen.blit(surf, r)
+
+        if s.jump_point:
+            m = "Jump Point: [%s, %s]" % (s.jump_point[0], s.jump_point[1])
+        else:
+            m = "Jump Point: None"
+        surf = font.render(m, True, color)
+        r = surf.get_rect()
+        r.bottomleft = rect.topleft
+        r = r.move(0, size * -4)
         game.screen.blit(surf, r)
 
 

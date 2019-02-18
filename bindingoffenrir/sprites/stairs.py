@@ -15,19 +15,28 @@ class Stairs(pg.sprite.Sprite):
         line of the stairs. Returns 'above', 'below', or 'on'."""
         if self.is_right:
             line_a, line_b = self.rect.bottomleft, self.rect.topright
+            xp = _cross_product(line_a, line_b, point)
+            if xp > 0:
+                return 'above'
+            elif xp < 0:
+                return 'below'
+            else:
+                return 'on'
         elif self.is_left:
             line_a, line_b = self.rect.bottomright, self.rect.topleft
-        xp = _cross_product(line_a, line_b, point)
-        if xp > 0:
-            return 'above'
-        elif xp < 0:
-            return 'below'
+            xp = _cross_product(line_a, line_b, point)
+            if xp > 0:
+                return 'below'
+            elif xp < 0:
+                return 'above'
+            else:
+                return 'on'
         else:
-            return 'on'
+            return None
 
 
-# if xp > 0: above line
-# if xp < 0: below line
+# if xp > 0: above if right, below if left
+# if xp < 0: below if right, above if left
 # if xp = 0: on line
 def _cross_product(line_a, line_b, point):
     x1, y1 = line_a[0], line_a[1]

@@ -56,28 +56,48 @@ def collide_with_stairs(sprite, stairsgroup):
 
     # Snap bottom-right of sprite to diagonal stair line
     if stairs.is_right:
-        p1 = sprite.rect.midbottom
-        p2 = sprite.rect.bottomright
-        p3 = stairs.rect.topright
-        p4 = stairs.rect.bottomleft
-        ip = geometry.calculateIntersectPoint(p1, p2, p3, p4)
-        if ip:
-            sprite.rect.bottomright = ip
-            sprite.pos = sprite.rect.center
+        # Check if corner is on the line
+        corner_on = False
+        if 'on' == stairs.get_above_below_on(sprite.rect.bottomright):
+            corner_on = True
+
+        # Calculate intersection, if any
+        intersect_point = None
+        if not corner_on:
+            p1 = sprite.rect.midbottom
+            p2 = sprite.rect.bottomright
+            p3 = stairs.rect.topright
+            p4 = stairs.rect.bottomleft
+            intersect_point = geometry.calculateIntersectPoint(p1, p2, p3, p4)
+
+        if corner_on or intersect_point:
+            if intersect_point:
+                sprite.rect.bottomright = intersect_point
+                sprite.pos = sprite.rect.center
             sprite.vel.y = 0
             sprite.jump_point = None
             sprite.on_stairs = True
             return
     # Snap bottom-left of sprite to diagonal stair line
     elif stairs.is_left:
-        p1 = sprite.rect.bottomleft
-        p2 = sprite.rect.midbottom
-        p3 = stairs.rect.topleft
-        p4 = stairs.rect.bottomright
-        ip = geometry.calculateIntersectPoint(p1, p2, p3, p4)
-        if ip:
-            sprite.rect.bottomleft = ip
-            sprite.pos = sprite.rect.center
+        # Check if corner is on the line
+        corner_on = False
+        if 'on' == stairs.get_above_below_on(sprite.rect.bottomleft):
+            corner_on = True
+
+        # Calculate intersection, if any
+        intersect_point = None
+        if not corner_on:
+            p1 = sprite.rect.bottomleft
+            p2 = sprite.rect.midbottom
+            p3 = stairs.rect.bottomright
+            p4 = stairs.rect.topleft
+            intersect_point = geometry.calculateIntersectPoint(p1, p2, p3, p4)
+
+        if corner_on or intersect_point:
+            if intersect_point:
+                sprite.rect.bottomleft = intersect_point
+                sprite.pos = sprite.rect.center
             sprite.vel.y = 0
             sprite.jump_point = None
             sprite.on_stairs = True

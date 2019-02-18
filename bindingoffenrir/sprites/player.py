@@ -36,6 +36,10 @@ class Player(pg.sprite.Sprite):
         # the acceleration in the x,y directions
         self.acc = pg.Vector2(0, settings.PLAYER_GRAVITY)
 
+        # Disable gravity when on the stairs to prevent sliding down
+        if self.on_stairs:
+            self.acc.y = 0
+
         # Update player based on input
         self._handle_keys()
 

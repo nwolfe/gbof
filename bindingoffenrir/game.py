@@ -153,6 +153,8 @@ class Game:
                     debug.draw.physics = not debug.draw.physics
                 if event.key == pg.K_F4:
                     debug.draw.version = not debug.draw.version
+                if event.key == pg.K_F5:
+                    debug.draw.points = not debug.draw.points
 
     def update(self):
         self.all_sprites.update()
@@ -180,6 +182,8 @@ class Game:
             debug.draw_version(self)
         if debug.draw.physics:
             debug.draw_physics(self, [self.player])
+        if debug.draw.points:
+            debug.draw_points(self, [self.player])
 
         if self.paused:
             self.screen.blit(self.dim_screen, (0, 0))

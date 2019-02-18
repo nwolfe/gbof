@@ -8,10 +8,54 @@ class _flags:
         self.grid = False
         self.hitboxes = False
         self.physics = False
+        self.points = False
         self.version = False
 
 
 draw = _flags()
+
+
+def draw_points(game, group):
+    size = 12
+    font = pg.font.SysFont('Arial', size, bold=False)
+    color = settings.GREEN
+    for s in group:
+        rect = game.camera.apply_rect(s.rect)
+
+        # Center
+        pos = rect.center
+        surf = font.render("[%s, %s]" % (pos[0], pos[1]), True, color)
+        r = surf.get_rect()
+        r.midtop = rect.center
+        game.screen.blit(surf, r)
+
+        # Topleft
+        pos = rect.topleft
+        surf = font.render("[%s, %s]" % (pos[0], pos[1]), True, color)
+        r = surf.get_rect()
+        r.topright = rect.topleft
+        game.screen.blit(surf, r)
+
+        # Topright
+        pos = rect.topright
+        surf = font.render("[%s, %s]" % (pos[0], pos[1]), True, color)
+        r = surf.get_rect()
+        r.topleft = rect.topright
+        game.screen.blit(surf, r)
+
+        # Bottomleft
+        pos = rect.bottomleft
+        surf = font.render("[%s, %s]" % (pos[0], pos[1]), True, color)
+        r = surf.get_rect()
+        r.bottomright = rect.bottomleft
+        game.screen.blit(surf, r)
+
+        # Bottomright
+        pos = rect.bottomright
+        surf = font.render("[%s, %s]" % (pos[0], pos[1]), True, color)
+        r = surf.get_rect()
+        r.bottomleft = rect.bottomright
+        game.screen.blit(surf, r)
 
 
 def draw_physics(game, group):
@@ -20,34 +64,37 @@ def draw_physics(game, group):
     color = settings.GREEN
     for s in group:
         rect = game.camera.apply_rect(s.rect)
+
+        # Position
         pos = s.pos
-        # pos = rect.center
-        acc = s.acc
-        vel = s.vel
-
-        surf = font.render("Pos: [%s, %s]" % (pos[0], pos[1]), True, color)
+        surf = font.render("Pos: [{:.2f}, {:.2f}]".format(pos[0], pos[1]),
+                           True, color)
         r = surf.get_rect()
         r.bottomleft = rect.topleft
         game.screen.blit(surf, r)
 
-        surf = font.render("Vel: %s" % vel, True, color)
+        # Velocity
+        surf = font.render("Vel: %s" % s.vel, True, color)
         r = surf.get_rect()
         r.bottomleft = rect.topleft
-        r = r.move(0, size * -1)
+        r.move_ip(0, size * -1)
         game.screen.blit(surf, r)
 
-        surf = font.render("Acc: %s" % acc, True, color)
+        # Acceleration
+        surf = font.render("Acc: %s" % s.acc, True, color)
         r = surf.get_rect()
         r.bottomleft = rect.topleft
-        r = r.move(0, size * -2)
+        r.move_ip(0, size * -2)
         game.screen.blit(surf, r)
 
+        # On Stairs?
         surf = font.render("On Stairs: %s" % s.on_stairs, True, color)
         r = surf.get_rect()
         r.bottomleft = rect.topleft
-        r = r.move(0, size * -3)
+        r.move_ip(0, size * -3)
         game.screen.blit(surf, r)
 
+        # Jump Point
         if s.jump_point:
             m = "Jump Point: [%s, %s]" % (s.jump_point[0], s.jump_point[1])
         else:
@@ -55,7 +102,7 @@ def draw_physics(game, group):
         surf = font.render(m, True, color)
         r = surf.get_rect()
         r.bottomleft = rect.topleft
-        r = r.move(0, size * -4)
+        r.move_ip(0, size * -4)
         game.screen.blit(surf, r)
 
 

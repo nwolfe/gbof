@@ -174,6 +174,7 @@ class Game:
             debug.draw_rects(self, self.ground)
             debug.draw_stairs(self)
             debug.draw_version(self)
+            debug.draw_physics(self, [self.player])
 
         if self.paused:
             self.screen.blit(self.dim_screen, (0, 0))

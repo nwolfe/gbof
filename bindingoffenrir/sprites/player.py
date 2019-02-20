@@ -60,12 +60,21 @@ class Player(pg.sprite.Sprite):
             self.pos.x = self.rect.width / 2
 
         # Check for collisions and move if necessary
-        self.rect.centerx = self.pos.x
-        collide_with_objects(self, self.game.ground, 'x')
-        self.rect.centery = self.pos.y
-        collide_with_objects(self, self.game.ground, 'y')
+        # Get the stairs that we're on / near so we can
+        # ignore other tiles that overlap with the stairs,
+        # giving us the ability to walk through tiles when
+        # traversing stairs.
+        if not self.stairs:
+            stairs = pg.sprite.spritecollideany(self, self.game.stairs)
+        else:
+            stairs = self.stairs
 
-        collide_with_stairs(self, self.game.stairs)
+        self.rect.centerx = self.pos.x
+        collide_with_objects(self, self.game.ground, 'x', stairs)
+        self.rect.centery = self.pos.y
+        collide_with_objects(self, self.game.ground, 'y', stairs)
+
+        collide_with_stairs(self, stairs)
 
     def _handle_keys(self):
         keys = pg.key.get_pressed()

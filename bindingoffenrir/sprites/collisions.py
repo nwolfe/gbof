@@ -40,10 +40,14 @@ def get_position_relative_to(point, stairs):
         return None
 
 
-def collide_with_objects(sprite, group, dir):
+def collide_with_objects(sprite, group, dir, stairs=None):
     if 'x' == dir:
         hit = pg.sprite.spritecollideany(sprite, group)
         if hit:
+            # Special-case: ignore collisions when on stairs
+            if stairs and hit.rect.colliderect(stairs.rect):
+                return
+
             # Collision with left side of object
             # (e.g. player running to the right, into a platform)
             if sprite.vel.x > 0:
@@ -61,6 +65,10 @@ def collide_with_objects(sprite, group, dir):
     elif 'y' == dir:
         hit = pg.sprite.spritecollideany(sprite, group)
         if hit:
+            # Special-case: ignore collisions when on stairs
+            if stairs and hit.rect.colliderect(stairs.rect):
+                return
+
             # Collision with top of object
             # (e.g. player falling down, onto a platform)
             if sprite.vel.y > 0:
@@ -79,8 +87,8 @@ def collide_with_objects(sprite, group, dir):
                     sprite.pos.y = sprite.rect.centery
 
 
-def collide_with_stairs(sprite, stairsgroup):
-    stairs = pg.sprite.spritecollideany(sprite, stairsgroup)
+def collide_with_stairs(sprite, stairs):
+    """Test collision with a single stair sprite (not a spritegroup)."""
     if not stairs:
         sprite.on_stairs = False
         sprite.stairs = None
@@ -114,7 +122,8 @@ def collide_with_stairs(sprite, stairsgroup):
         if corner_on or intersect_point:
             if intersect_point:
                 sprite.rect.bottomright = intersect_point
-                sprite.pos = sprite.rect.center
+                sprite.pos.x = sprite.rect.centerx
+                sprite.pos.y = sprite.rect.centery
             sprite.vel.y = 0
             sprite.jump_point = None
             sprite.on_stairs = True
@@ -140,7 +149,8 @@ def collide_with_stairs(sprite, stairsgroup):
         if corner_on or intersect_point:
             if intersect_point:
                 sprite.rect.bottomleft = intersect_point
-                sprite.pos = sprite.rect.center
+                sprite.pos.x = sprite.rect.centerx
+                sprite.pos.y = sprite.rect.centery
             sprite.vel.y = 0
             sprite.jump_point = None
             sprite.on_stairs = True

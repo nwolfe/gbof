@@ -111,13 +111,35 @@ class Player(pg.sprite.Sprite):
                 if self.stairs.is_right:
                     target = pg.Vector2(self.stairs.rect.bottomleft)
                     heading = target - self.rect.bottomright
-                    heading.scale_to_length(settings.PLAYER_STAIR_SPEED)
+                    if heading.length() > 0:
+                        heading.scale_to_length(settings.PLAYER_STAIR_SPEED)
                     self.vel = heading
                 elif self.stairs.is_left:
                     target = pg.Vector2(self.stairs.rect.bottomright)
                     heading = target - self.rect.bottomleft
-                    heading.scale_to_length(settings.PLAYER_STAIR_SPEED)
+                    if heading.length() > 0:
+                        heading.scale_to_length(settings.PLAYER_STAIR_SPEED)
                     self.vel = heading
+            # fall through ground if we're above stairs
+            else:
+                self.rect.y += 1
+                stairs = pg.sprite.spritecollideany(self, self.game.stairs)
+                self.rect.y -= 1
+                if stairs:
+                    # and completely within the right half of the stairs
+                    if stairs.is_right:
+                        s = stairs.rect
+                        p = self.rect
+                        if (s.centerx < p.left) and (p.right < s.right):
+                            self.on_stairs = True
+                            self.stairs = stairs
+                    # or complete within the left half of the stairs
+                    elif stairs.is_left:
+                        s = stairs.rect
+                        p = self.rect
+                        if (s.left < p.left) and (p.right < s.centerx):
+                            self.on_stairs = True
+                            self.stairs = stairs
 
         if keys[pg.K_SPACE]:
             # jump up

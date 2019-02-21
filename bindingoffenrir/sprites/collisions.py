@@ -94,6 +94,20 @@ def collide_with_stairs(sprite, stairs):
         sprite.stairs = None
         return
 
+    # If the sprite is *trying* to collide with the stairs to go up them,
+    # then just see if their feet are close enough to the base of the stairs.
+    if sprite.go_up_stairs and sprite.stairs is None:
+        if stairs.is_right:
+            distance = pg.Vector2(stairs.rect.bottomleft) - \
+                       pg.Vector2(sprite.rect.bottomright)
+        else:  # stairs.is_left
+            distance = pg.Vector2(stairs.rect.bottomright) - \
+                       pg.Vector2(sprite.rect.bottomleft)
+        if distance.length() < 10:
+            sprite.on_stairs = True
+            sprite.stairs = stairs
+            return
+
     # Let the sprite jump up through the stairs; don't snap to stairs
     if sprite.vel.y < 0 and sprite.jump_point:
         pos = get_position_relative_to(sprite.jump_point, stairs)

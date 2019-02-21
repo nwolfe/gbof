@@ -26,6 +26,7 @@ class Player(pg.sprite.Sprite):
         self.rect.center = self.pos
         self.on_stairs = False
         self.stairs = None
+        self.go_up_stairs = False
 
         self.jump_point = None
         self._last_jump = 0
@@ -80,7 +81,7 @@ class Player(pg.sprite.Sprite):
         keys = pg.key.get_pressed()
         left = keys[pg.K_LEFT] or keys[pg.K_a]
         right = keys[pg.K_RIGHT] or keys[pg.K_d]
-        # up = keys[pg.K_UP] or keys[pg.K_w]
+        up = keys[pg.K_UP] or keys[pg.K_w]
         down = keys[pg.K_DOWN] or keys[pg.K_s]
         if left:
             # move left/back
@@ -96,15 +97,8 @@ class Player(pg.sprite.Sprite):
             # move up stairs by walking into them
             if self.on_stairs:
                 self.vel.y = -settings.PLAYER_STAIR_SPEED
-        # if up:
-        #     if self._on_stairs:
-        #         if self.stairs.is_right:
-        #             target = pg.Vector2(self.stairs.rect.topright)
-        #             heading = target - self.rect.bottomright
-        #             heading.scale_to_length(settings.PLAYER_STAIR_SPEED)
-        #             self.vel = heading
-        #         elif self.stairs.is_left:
-        #             pass
+        # if up: flag the player and let stair collision do the rest
+        self.go_up_stairs = up
         if down:
             # move down stairs
             if self.on_stairs:

@@ -4,6 +4,7 @@ import bindingoffenrir.settings as settings
 import bindingoffenrir.resources as resources
 import bindingoffenrir.sprites as sprites
 import bindingoffenrir.debug as debug
+import bindingoffenrir.fullscreen as fullscreen
 from bindingoffenrir.tilemap import TiledMap, Camera
 
 
@@ -31,9 +32,12 @@ class Game:
         # pg.mixer.pre_init(44100, -16, 1 2048)
         pg.init()
         pg.display.set_caption(settings.TITLE)
-        self.screen = pg.display.set_mode(
-            # (settings.WIDTH, settings.HEIGHT), pg.FULLSCREEN)
-            (settings.WIDTH, settings.HEIGHT))
+        if fullscreen.ENABLED:
+            self.screen = pg.display.set_mode(
+                (settings.WIDTH, settings.HEIGHT), pg.FULLSCREEN)
+        else:
+            self.screen = pg.display.set_mode(
+                (settings.WIDTH, settings.HEIGHT))
         self.playing = False
 
         # Pausing

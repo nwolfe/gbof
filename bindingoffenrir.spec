@@ -18,6 +18,16 @@ CODE = ['bindingoffenrir/main.py']
 DEBUG = False
 CONSOLE = DEBUG
 
+
+# Write runtime options into executable.
+# NOTE this is reverted at end of this file.
+fullscreenfile = None
+if os.getenv('FULLSCREEN') == 'true':
+    fullscreenfile = os.path.join(NAME, 'fullscreen.py')
+    with open(fullscreenfile, 'w') as f:
+        f.write('ENABLED = True\n')
+
+
 # PyInstaller configuration below
 
 block_cipher = None
@@ -48,3 +58,8 @@ exe = EXE(pyz,
           upx=True,
           runtime_tmpdir=None,
           console=CONSOLE)
+
+# Revert runtime options.
+if fullscreenfile:
+    with open(fullscreenfile, 'w') as f:
+        f.write('ENABLED = False\n')

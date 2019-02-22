@@ -22,5 +22,9 @@ resources:
 upload:
 	${PYTHON} ${ROOT}/dev/upload.py
 
+dropbox: clean
+	@make build FULLSCREEN=true
+	@make upload
 
-.PHONY: play build clean execute resources upload
+
+.PHONY: play build clean execute resources upload dropbox

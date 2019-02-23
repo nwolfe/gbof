@@ -69,10 +69,10 @@ class Player(pg.sprite.Sprite):
         else:
             stairs = self.stairs
 
-        self.rect.centerx = self.pos.x
-        _collide_with_objects(self, self.game.ground, 'x', stairs)
         self.rect.centery = self.pos.y
         _collide_with_objects(self, self.game.ground, 'y', stairs)
+        self.rect.centerx = self.pos.x
+        _collide_with_objects(self, self.game.ground, 'x', stairs)
 
         _collide_with_stairs(self, stairs)
 

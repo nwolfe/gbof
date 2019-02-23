@@ -102,17 +102,13 @@ class Player(pg.sprite.Sprite):
             # move down stairs
             if self.on_stairs:
                 if self.stairs.is_right:
-                    target = pg.Vector2(self.stairs.rect.bottomleft)
-                    heading = target - self.rect.bottomright
-                    if heading.length() > 0:
-                        heading.scale_to_length(settings.PLAYER_STAIR_SPEED)
-                    self.vel = heading
+                    self.vel.y = settings.PLAYER_STAIR_SPEED
+                    self.acc.x = settings.PLAYER_ACC
+                    self._facing = 'left'
                 elif self.stairs.is_left:
-                    target = pg.Vector2(self.stairs.rect.bottomright)
-                    heading = target - self.rect.bottomleft
-                    if heading.length() > 0:
-                        heading.scale_to_length(settings.PLAYER_STAIR_SPEED)
-                    self.vel = heading
+                    self.vel.y = settings.PLAYER_STAIR_SPEED
+                    self.acc.x = -settings.PLAYER_ACC
+                    self._facing = 'right'
             # fall through ground if we're above stairs
             else:
                 self.rect.y += 1
@@ -163,7 +159,7 @@ class Player(pg.sprite.Sprite):
         if self.vel.x != 0:
             if now - self._last_update > 180:
                 self._last_update = now
-                if self.vel.x > 0:
+                if self._facing == 'right':
                     self._use_frame_from(self.game.player_move_images_r)
                 else:
                     self._use_frame_from(self.game.player_move_images_l)

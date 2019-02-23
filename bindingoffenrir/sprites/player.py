@@ -1,7 +1,6 @@
 import pygame as pg
+import bindingoffenrir.geometry as geometry
 import bindingoffenrir.settings as settings
-from bindingoffenrir.sprites.collisions import collide_with_objects
-from bindingoffenrir.sprites.collisions import collide_with_stairs
 
 
 class Player(pg.sprite.Sprite):
@@ -71,11 +70,11 @@ class Player(pg.sprite.Sprite):
             stairs = self.stairs
 
         self.rect.centerx = self.pos.x
-        collide_with_objects(self, self.game.ground, 'x', stairs)
+        _collide_with_objects(self, self.game.ground, 'x', stairs)
         self.rect.centery = self.pos.y
-        collide_with_objects(self, self.game.ground, 'y', stairs)
+        _collide_with_objects(self, self.game.ground, 'y', stairs)
 
-        collide_with_stairs(self, stairs)
+        _collide_with_stairs(self, stairs)
 
     def _handle_keys(self):
         keys = pg.key.get_pressed()
@@ -183,3 +182,176 @@ class Player(pg.sprite.Sprite):
         self.image = images[self._current_frame]
         self.rect = self.image.get_rect()
         self.rect.center = center
+
+
+def _collide_with_objects(sprite, group, dir, stairs=None):
+    if 'x' == dir:
+        hit = pg.sprite.spritecollideany(sprite, group)
+        if hit:
+            # Special-case: ignore collisions when on stairs
+            if stairs and hit.rect.colliderect(stairs.rect):
+                return
+
+            # Collision with left side of object
+            # (e.g. player running to the right, into a platform)
+            if sprite.vel.x > 0:
+                if sprite.rect.right > hit.rect.left:
+                    sprite.rect.right = hit.rect.left
+                    sprite.vel.x = 0
+                    sprite.pos.x = sprite.rect.centerx
+            # Collision with right side of object
+            # (e.g. player running to the left, into a platform)
+            if sprite.vel.x < 0:
+                if sprite.rect.left < hit.rect.right:
+                    sprite.rect.left = hit.rect.right
+                    sprite.vel.x = 0
+                    sprite.pos.x = sprite.rect.centerx
+    elif 'y' == dir:
+        hit = pg.sprite.spritecollideany(sprite, group)
+        if hit:
+            # Special-case: ignore collisions when on stairs
+            if stairs and hit.rect.colliderect(stairs.rect):
+                return
+
+            # Collision with top of object
+            # (e.g. player falling down, onto a platform)
+            if sprite.vel.y > 0:
+                if sprite.rect.bottom > hit.rect.top:
+                    sprite.rect.bottom = hit.rect.top
+                    sprite.vel.y = 0
+                    sprite.pos.y = sprite.rect.centery
+                    sprite.jump_point = None
+            # Collision with bottom of object
+            # (e.g. player jumping up and hitting their
+            # head on the bottom of a platform)
+            elif sprite.vel.y < 0:
+                if sprite.rect.top < hit.rect.bottom:
+                    sprite.rect.top = hit.rect.bottom
+                    sprite.vel.y = 0
+                    sprite.pos.y = sprite.rect.centery
+
+
+def _collide_with_stairs(sprite, stairs):
+    """Test collision with a single stair sprite (not a spritegroup)."""
+    if not stairs:
+        sprite.on_stairs = False
+        sprite.stairs = None
+        return
+
+    # If the sprite is *trying* to collide with the stairs to go up them,
+    # then just see if their feet are close enough to the base of the stairs.
+    if sprite.go_up_stairs and sprite.stairs is None:
+        if stairs.is_right:
+            distance = pg.Vector2(stairs.rect.bottomleft) - \
+                       pg.Vector2(sprite.rect.bottomright)
+        else:  # stairs.is_left
+            distance = pg.Vector2(stairs.rect.bottomright) - \
+                       pg.Vector2(sprite.rect.bottomleft)
+        if distance.length() < 10:
+            sprite.on_stairs = True
+            sprite.stairs = stairs
+            return
+
+    # Let the sprite jump up through the stairs; don't snap to stairs
+    if sprite.vel.y < 0 and sprite.jump_point:
+        pos = _get_position_relative_to(sprite.jump_point, stairs)
+        if 'below' == pos:
+            sprite.on_stairs = False
+            sprite.stairs = None
+            return
+
+    # Snap bottom-right of sprite to diagonal stair line
+    if stairs.is_right:
+        # Check if corner is on the line
+        corner_on = False
+        pos = _get_position_relative_to(sprite.rect.bottomright, stairs)
+        if 'on' == pos:
+            corner_on = True
+
+        # Calculate intersection, if any
+        intersect_point = None
+        if not corner_on:
+            p1 = sprite.rect.midbottom
+            p2 = sprite.rect.bottomright
+            p3 = stairs.rect.topright
+            p4 = stairs.rect.bottomleft
+            intersect_point = geometry.calculateIntersectPoint(p1, p2, p3, p4)
+
+        if corner_on or intersect_point:
+            if intersect_point:
+                sprite.rect.bottomright = intersect_point
+                sprite.pos.x = sprite.rect.centerx
+                sprite.pos.y = sprite.rect.centery
+            sprite.vel.y = 0
+            sprite.jump_point = None
+            sprite.on_stairs = True
+            sprite.stairs = stairs
+            return
+    # Snap bottom-left of sprite to diagonal stair line
+    elif stairs.is_left:
+        # Check if corner is on the line
+        corner_on = False
+        pos = _get_position_relative_to(sprite.rect.bottomleft, stairs)
+        if 'on' == pos:
+            corner_on = True
+
+        # Calculate intersection, if any
+        intersect_point = None
+        if not corner_on:
+            p1 = sprite.rect.bottomleft
+            p2 = sprite.rect.midbottom
+            p3 = stairs.rect.bottomright
+            p4 = stairs.rect.topleft
+            intersect_point = geometry.calculateIntersectPoint(p1, p2, p3, p4)
+
+        if corner_on or intersect_point:
+            if intersect_point:
+                sprite.rect.bottomleft = intersect_point
+                sprite.pos.x = sprite.rect.centerx
+                sprite.pos.y = sprite.rect.centery
+            sprite.vel.y = 0
+            sprite.jump_point = None
+            sprite.on_stairs = True
+            sprite.stairs = stairs
+            return
+
+    sprite.on_stairs = False
+    sprite.stairs = None
+
+
+def _get_position_relative_to(point, stairs):
+    """Tests where the point lies in relation to the diagonal
+    line of the stairs. Returns 'above', 'below', or 'on'."""
+    if stairs.is_right:
+        line_a, line_b = stairs.rect.bottomleft, stairs.rect.topright
+        xp = _cross_product(line_a, line_b, point)
+        if xp > 0:
+            return 'above'
+        elif xp < 0:
+            return 'below'
+        else:
+            return 'on'
+    elif stairs.is_left:
+        line_a, line_b = stairs.rect.bottomright, stairs.rect.topleft
+        xp = _cross_product(line_a, line_b, point)
+        if xp > 0:
+            return 'below'
+        elif xp < 0:
+            return 'above'
+        else:
+            return 'on'
+    else:
+        return None
+
+
+# if xp > 0: above if right, below if left
+# if xp < 0: below if right, above if left
+# if xp = 0: on line
+def _cross_product(line_a, line_b, point):
+    x1, y1 = line_a[0], line_a[1]
+    x2, y2 = line_b[0], line_b[1]
+    xA, yA = point[0], point[1]
+    v1 = pg.Vector2(x2 - x1, y2 - y1)
+    v2 = pg.Vector2(x2 - xA, y2 - yA)
+    xp = v1.x * v2.y - v1.y * v2.x
+    return xp

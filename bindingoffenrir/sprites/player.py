@@ -5,7 +5,7 @@ import bindingoffenrir.images as images
 
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, game, x, y):
+    def __init__(self, game, x=0, y=0):
         self._layer = settings.LAYER_PLAYER
         pg.sprite.Sprite.__init__(self)
         self._game = game

@@ -4,6 +4,14 @@ import bindingoffenrir.images as images
 
 
 class Baddie(pg.sprite.Sprite):
+    @staticmethod
+    def from_tiled_object(obj):
+        if obj.name == 'baddie_r':
+            direction = 'right'
+        else:
+            direction = 'left'
+        return Baddie(obj.x, obj.y, direction)
+
     def __init__(self, x, y, direction):
         self._layer = settings.LAYER_BADDIE
         pg.sprite.Sprite.__init__(self)

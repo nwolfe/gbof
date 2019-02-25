@@ -2,6 +2,10 @@ import pygame as pg
 
 
 class Ground(pg.sprite.Sprite):
+    @staticmethod
+    def from_tiled_object(obj):
+        return Ground(obj.x, obj.y, obj.width, obj.height)
+
     def __init__(self, x, y, width, height):
         pg.sprite.Sprite.__init__(self)
         self.rect = pg.rect.Rect(x, y, width, height)

@@ -33,6 +33,7 @@ class Level:
         self.baddies = None
         self.stairs = None
         self.ground = None
+        self.exits = None
 
     def load(self, scale):
         self.map = tilemap.TiledMap(self._filename, scale)
@@ -45,6 +46,11 @@ class Level:
         self.baddies = pg.sprite.Group()
         self.stairs = pg.sprite.Group()
         self.ground = pg.sprite.Group()
+        self.exits = pg.sprite.Group()
+        self._create_objects(game)
+
+    def _create_objects(self, game):
+        player_spawn = None
         for obj in self.map.tm.objects:
             # Scale the object up
             obj.x *= settings.SCALE_FACTOR
@@ -56,24 +62,31 @@ class Level:
             obj.y += obj.height / 2
             # Construct all the entities
             if obj.name == 'ground':
-                g = sprites.Ground(obj.x, obj.y, obj.width, obj.height)
+                g = sprites.Ground.from_tiled_object(obj)
                 g.add(self.ground)
-            elif obj.name == 'player' or obj.name == 'exit1':
-                game.player.kill()  # Remove it from all previous groups
-                game.player.add(self.all_sprites)
-                game.player.set_position(obj.x, obj.y)
+            elif obj.name == 'player':
+                player_spawn = (obj.x, obj.y)
             elif obj.name and obj.name.startswith('baddie'):
-                if obj.name == 'baddie_r':
-                    b = sprites.Baddie(obj.x, obj.y, 'right')
-                else:
-                    b = sprites.Baddie(obj.x, obj.y, 'left')
+                b = sprites.Baddie.from_tiled_object(obj)
                 b.add(self.all_sprites, self.baddies)
             elif obj.name and obj.name.startswith('stairs'):
-                if obj.name == 'stairs_r':
-                    s = sprites.Stairs(obj.x, obj.y, obj.width, obj.height, 'right')
-                else:
-                    s = sprites.Stairs(obj.x, obj.y, obj.width, obj.height, 'left')
+                s = sprites.Stairs.from_tiled_object(obj)
                 s.add(self.stairs)
+            elif obj.name and obj.name.startswith('exit'):
+                print(obj.name)
+                e = sprites.Exit.from_tiled_object(obj)
+                e.add(self.exits)
+
+        # Start player at the first exit by default
+        if player_spawn is None:
+            for e in self.exits:
+                if e.name == 'exit1':
+                    player_spawn = e.rect.center
+
+        # Place the player at the entry to the level
+        game.player.set_position(player_spawn[0], player_spawn[1])
+        game.player.kill()  # Remove it from all previous groups
+        game.player.add(self.all_sprites)
 
     def draw(self, screen):
         screen.blit(self.map_image, self.camera.apply_rect(self.map_rect))

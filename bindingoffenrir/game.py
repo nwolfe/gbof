@@ -43,13 +43,14 @@ class Game:
         # self.levels.load(settings.SCALE_FACTOR)
         # self._levels = level.get_all()
         # self._levels.load(settings.SCALE_FACTOR)
+        # self.level = self._levels.first()
         self.level = level.get_sample()
         self.level.load(settings.SCALE_FACTOR)
         images.ALL.load()
 
     def new(self):
         self.paused = False
-        self.player = sprites.Player(self, 0, 0)
+        self.player = sprites.Player(self)
         # self.level = self._levels.first()
         self.level.new(self)
 

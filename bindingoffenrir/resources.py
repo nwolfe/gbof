@@ -17,5 +17,5 @@ def image(file):
     return os.path.join(IMAGE_DIR, file)
 
 
-def map(file):
-    return os.path.join(MAP_DIR, file)
+def map(directory, file):
+    return os.path.join(MAP_DIR, directory, file)

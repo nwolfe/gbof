@@ -42,7 +42,13 @@ PLAYER_IDLE_IMAGES = [
 ENEMY_IMAGE = 'baddie_sprite.png'
 
 # Levels
-SAMPLE_LEVEL = 'sample_level.tmx'
+SAMPLE_LEVEL = ['sample', 'sample_level.tmx']
+LEVELS = [
+    ['level1', [
+        'level1_stage1.tmx',
+        'level1_stage2.tmx'
+    ]]
+]
 
 # Player settings
 PLAYER_ACC = 1  # 0.5

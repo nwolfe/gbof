@@ -20,7 +20,7 @@ def draw_points(game, group):
     font = pg.font.SysFont('Arial', size, bold=False)
     color = settings.GREEN
     for s in group:
-        rect = game.camera.apply_rect(s.rect)
+        rect = game.level.camera.apply_rect(s.rect)
 
         # Center
         pos = rect.center
@@ -63,7 +63,7 @@ def draw_physics(game, group):
     font = pg.font.SysFont('Arial', size, bold=False)
     color = settings.GREEN
     for s in group:
-        rect = game.camera.apply_rect(s.rect)
+        rect = game.level.camera.apply_rect(s.rect)
 
         # Position
         pos = s.pos
@@ -127,7 +127,7 @@ def draw_grid(game):
 
 def draw_rects(game, group):
     for s in group:
-        rect = game.camera.apply_rect(s.rect)
+        rect = game.level.camera.apply_rect(s.rect)
         pg.draw.rect(game.screen, settings.CYAN, rect, 1)
         pg.draw.circle(game.screen, settings.RED, rect.center, 3)
         pg.draw.circle(game.screen, settings.GREEN, rect.topleft, 3)
@@ -138,7 +138,7 @@ def draw_rects(game, group):
 
 def draw_stairs(game):
     for s in game.stairs:
-        rect = game.camera.apply_rect(s.rect)
+        rect = game.level.camera.apply_rect(s.rect)
         if s.is_right:
             pg.draw.line(game.screen, settings.CYAN,
                          rect.bottomleft, rect.topright)

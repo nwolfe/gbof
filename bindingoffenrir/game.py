@@ -5,7 +5,7 @@ import bindingoffenrir.resources as resources
 import bindingoffenrir.sprites as sprites
 import bindingoffenrir.debug as debug
 import bindingoffenrir.fullscreen as fullscreen
-from bindingoffenrir.tilemap import TiledMap, Camera
+import bindingoffenrir.level as level
 
 
 def scale_image(image, scale):
@@ -59,12 +59,13 @@ class Game:
         self.paused = None
 
         # Tilemap [declarations only; see #new()]
-        self.map_image = None
-        self.map_rect = None
-        self.camera = None
+        # self.map_image = None
+        # self.map_rect = None
+        # self.camera = None
 
         # Resources from disk [see #_load_data()]
-        self.map = None
+        self._levels = None
+        self.level = None
         self.spritesheet = None
         self.player_move_images_r = None
         self.player_move_images_l = None
@@ -75,8 +76,12 @@ class Game:
         self._load_data()
 
     def _load_data(self):
-        self.map = TiledMap(resources.map(settings.SAMPLE_LEVEL),
-                            scale=settings.SCALE_FACTOR)
+        # self.levels = level.get_all()
+        # self.levels.load(settings.SCALE_FACTOR)
+        # self._levels = level.get_all()
+        # self._levels.load(settings.SCALE_FACTOR)
+        self.level = level.get_sample()
+        self.level.load(settings.SCALE_FACTOR)
         self.spritesheet = sprites.Spritesheet(
             resources.image(settings.PLAYER_SPRITESHEET))
         self.player_move_images_r = self.spritesheet.get_images(
@@ -99,13 +104,15 @@ class Game:
         self.stairs = pg.sprite.Group()
         self.ground = pg.sprite.Group()
         self.paused = False
-        self.map_image = self.map.make_map(self)
-        self.map_rect = self.map_image.get_rect()
-        self.camera = Camera(self.map.width, self.map.height)
+        # self.map_image = self.map.make_map(self)
+        # self.map_rect = self.map_image.get_rect()
+        # self.camera = Camera(self.map.width, self.map.height)
+        # self.level = self._levels.first()
+        self.level.new(self)
         self._create_tilemap_objects()
 
     def _create_tilemap_objects(self):
-        for obj in self.map.tm.objects:
+        for obj in self.level.map.tm.objects:
             # Scale the object up
             obj.x *= settings.SCALE_FACTOR
             obj.y *= settings.SCALE_FACTOR
@@ -117,7 +124,7 @@ class Game:
             # Construct all the entities
             if obj.name == 'ground':
                 sprites.Ground(self, obj.x, obj.y, obj.width, obj.height)
-            elif obj.name == 'player':
+            elif obj.name == 'player' or obj.name == 'exit1':
                 self.player = sprites.Player(self, obj.x, obj.y)
             elif obj.name == 'baddie_r':
                 sprites.Baddie(self, obj.x, obj.y, 'right')
@@ -162,7 +169,7 @@ class Game:
 
     def update(self):
         self.all_sprites.update()
-        self.camera.update(self.player)
+        self.level.camera.update(self.player)
 
     def draw(self):
         pg.display.set_caption("{} (FPS {:.2f})".format(
@@ -170,10 +177,11 @@ class Game:
 
         self.screen.fill(settings.BGCOLOR)
         # self.screen.blit(self.bgimg, (0, 0))
-        self.screen.blit(self.map_image, self.camera.apply_rect(self.map_rect))
+        # self.screen.blit(self.map_image, self.camera.apply_rect(self.map_rect))
+        self.level.draw(self.screen)
         # self.all_sprites.draw(self.screen)
         for sprite in self.all_sprites:
-            self.screen.blit(sprite.image, self.camera.apply(sprite))
+            self.screen.blit(sprite.image, self.level.camera.apply(sprite))
 
         if debug.draw.grid:
             debug.draw_grid(self)

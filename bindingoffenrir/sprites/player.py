@@ -54,8 +54,8 @@ class Player(pg.sprite.Sprite):
         self.pos += self.vel + (0.5 * self.acc)
 
         # Don't walk off edge of screen
-        if self.pos.x + (self.rect.width / 2) >= self.game.map.width:
-            self.pos.x = self.game.map.width - (self.rect.width / 2)
+        if self.pos.x + (self.rect.width / 2) >= self.game.level.map.width:
+            self.pos.x = self.game.level.map.width - (self.rect.width / 2)
         if self.pos.x - (self.rect.width / 2) < 0:
             self.pos.x = self.rect.width / 2
 

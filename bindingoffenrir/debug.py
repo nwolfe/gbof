@@ -137,7 +137,7 @@ def draw_rects(game, group):
 
 
 def draw_stairs(game):
-    for s in game.stairs:
+    for s in game.level.stairs:
         rect = game.level.camera.apply_rect(s.rect)
         if s.is_right:
             pg.draw.line(game.screen, settings.CYAN,

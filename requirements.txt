@@ -2,7 +2,7 @@
 pygame>=1.9.4
 
 # Support for Tiled maps
-# pytmx>=3.21.6
+pytmx>=3.21.6
 
 # Bobbing/easing/transition/etc animations
 # pytweening>=1.0.3

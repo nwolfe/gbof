@@ -1,13 +1,14 @@
 import pygame as pg
 import bindingoffenrir.geometry as geometry
 import bindingoffenrir.settings as settings
+import bindingoffenrir.images as images
 
 
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self._layer = settings.LAYER_PLAYER
-        pg.sprite.Sprite.__init__(self, game.all_sprites)
-        self.game = game
+        pg.sprite.Sprite.__init__(self)
+        self._game = game
 
         # Change velocity to change acceleration to change position.
         # The position changes based on the velocity and acceleration,
@@ -16,7 +17,7 @@ class Player(pg.sprite.Sprite):
         self.vel = pg.Vector2(0, 0)
         self.acc = pg.Vector2(0, 0)
 
-        self.image = game.player_idle_images_r[0]
+        self.image = images.ALL.player_idle_images_r[0]
         self._current_frame = 0
         self._last_update = 0
         self._facing = 'right'
@@ -29,6 +30,12 @@ class Player(pg.sprite.Sprite):
 
         self.jump_point = None
         self._last_jump = 0
+
+    def set_position(self, x, y):
+        self.pos.x = x
+        self.pos.y = y
+        self.rect.centerx = x
+        self.rect.centery = y
 
     def update(self):
         self._animate()
@@ -54,8 +61,8 @@ class Player(pg.sprite.Sprite):
         self.pos += self.vel + (0.5 * self.acc)
 
         # Don't walk off edge of screen
-        if self.pos.x + (self.rect.width / 2) >= self.game.level.map.width:
-            self.pos.x = self.game.level.map.width - (self.rect.width / 2)
+        if self.pos.x + (self.rect.width / 2) >= self._game.level.map.width:
+            self.pos.x = self._game.level.map.width - (self.rect.width / 2)
         if self.pos.x - (self.rect.width / 2) < 0:
             self.pos.x = self.rect.width / 2
 
@@ -65,14 +72,14 @@ class Player(pg.sprite.Sprite):
         # giving us the ability to walk through tiles when
         # traversing stairs.
         if not self.stairs:
-            stairs = pg.sprite.spritecollideany(self, self.game.stairs)
+            stairs = pg.sprite.spritecollideany(self, self._game.level.stairs)
         else:
             stairs = self.stairs
 
         self.rect.centery = self.pos.y
-        _collide_with_objects(self, self.game.ground, 'y', stairs)
+        _collide_with_objects(self, self._game.level.ground, 'y', stairs)
         self.rect.centerx = self.pos.x
-        _collide_with_objects(self, self.game.ground, 'x', stairs)
+        _collide_with_objects(self, self._game.level.ground, 'x', stairs)
 
         _collide_with_stairs(self, stairs)
 
@@ -112,7 +119,7 @@ class Player(pg.sprite.Sprite):
             # fall through ground if we're above stairs
             else:
                 self.rect.y += 1
-                stairs = pg.sprite.spritecollideany(self, self.game.stairs)
+                stairs = pg.sprite.spritecollideany(self, self._game.level.stairs)
                 self.rect.y -= 1
                 if stairs:
                     # and completely within the right half of the stairs
@@ -145,7 +152,7 @@ class Player(pg.sprite.Sprite):
         else:
             if now - self._last_jump > settings.PLAYER_JUMP_COOLDOWN:
                 self.rect.y += 1
-                hit = pg.sprite.spritecollideany(self, self.game.ground)
+                hit = pg.sprite.spritecollideany(self, self._game.level.ground)
                 self.rect.y -= 1
                 if hit:
                     self._last_jump = now
@@ -160,22 +167,22 @@ class Player(pg.sprite.Sprite):
             if now - self._last_update > 180:
                 self._last_update = now
                 if self._facing == 'right':
-                    self._use_frame_from(self.game.player_move_images_r)
+                    self._use_frame_from(images.ALL.player_move_images_r)
                 else:
-                    self._use_frame_from(self.game.player_move_images_l)
+                    self._use_frame_from(images.ALL.player_move_images_l)
         # Idle animation
         else:
             if now - self._last_update > 350:
                 self._last_update = now
                 if self._facing == 'right':
-                    self._use_frame_from(self.game.player_idle_images_r)
+                    self._use_frame_from(images.ALL.player_idle_images_r)
                 else:
-                    self._use_frame_from(self.game.player_idle_images_l)
+                    self._use_frame_from(images.ALL.player_idle_images_l)
 
-    def _use_frame_from(self, images):
+    def _use_frame_from(self, image_frames):
         center = self.rect.center
-        self._current_frame = (self._current_frame + 1) % len(images)
-        self.image = images[self._current_frame]
+        self._current_frame = (self._current_frame + 1) % len(image_frames)
+        self.image = image_frames[self._current_frame]
         self.rect = self.image.get_rect()
         self.rect.center = center
 
@@ -346,8 +353,8 @@ def _get_position_relative_to(point, stairs):
 def _cross_product(line_a, line_b, point):
     x1, y1 = line_a[0], line_a[1]
     x2, y2 = line_b[0], line_b[1]
-    xA, yA = point[0], point[1]
+    xa, ya = point[0], point[1]
     v1 = pg.Vector2(x2 - x1, y2 - y1)
-    v2 = pg.Vector2(x2 - xA, y2 - yA)
+    v2 = pg.Vector2(x2 - xa, y2 - ya)
     xp = v1.x * v2.y - v1.y * v2.x
     return xp

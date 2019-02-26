@@ -39,13 +39,10 @@ class Game:
         self._load_data()
 
     def _load_data(self):
-        # self.levels = level.get_all()
-        # self.levels.load(settings.SCALE_FACTOR)
-        # self._levels = level.get_all()
-        # self._levels.load(settings.SCALE_FACTOR)
-        # self.level = self._levels.first()
-        self.level = level.get_sample()
-        self.level.load(settings.SCALE_FACTOR)
+        self._levels = level.get_all()
+        self.level = self._levels.first()
+        # self.level = level.get_sample()
+        self.level.load()
         images.ALL.load()
 
     def new(self):
@@ -86,6 +83,18 @@ class Game:
 
     def update(self):
         self.level.update(self)
+        exit_ = pg.sprite.spritecollideany(self.player, self.level.exits)
+        if exit_:
+            if exit_.next_map and exit_.next_exit:
+                self._next_level(exit_.next_map, exit_.next_exit)
+
+    def _next_level(self, next_map, next_exit):
+        next_level = self._levels.get(next_map)
+        if next_level:
+            next_level.load(settings.SCALE_FACTOR)
+            next_level.new(self)
+            next_level.place_at_exit(self.player, next_exit)
+            self.level = next_level
 
     def draw(self):
         pg.display.set_caption("{} (FPS {:.2f})".format(
@@ -100,6 +109,7 @@ class Game:
             debug.draw_rects(self, self.level.all_sprites)
             debug.draw_rects(self, self.level.stairs)
             debug.draw_rects(self, self.level.ground)
+            debug.draw_rects(self, self.level.exits, settings.GREEN)
             debug.draw_stairs(self)
         if debug.draw.version:
             debug.draw_version(self)

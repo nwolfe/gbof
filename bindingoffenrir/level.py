@@ -35,8 +35,8 @@ class Level:
         self.ground = None
         self.exits = None
 
-    def load(self, scale):
-        self.map = tilemap.TiledMap(self._filename, scale)
+    def load(self):
+        self.map = tilemap.TiledMap(self._filename, settings.SCALE_FACTOR)
 
     def new(self, game):
         self.map_image = self.map.make_map(game)
@@ -48,6 +48,11 @@ class Level:
         self.ground = pg.sprite.Group()
         self.exits = pg.sprite.Group()
         self._create_objects(game)
+
+    def place_at_exit(self, player, exit_name):
+        for e in self.exits:
+            if e.name == exit_name:
+                player.set_position(e.rect.x, e.rect.y)
 
     def _create_objects(self, game):
         player_spawn = None
@@ -73,7 +78,6 @@ class Level:
                 s = sprites.Stairs.from_tiled_object(obj)
                 s.add(self.stairs)
             elif obj.name and obj.name.startswith('exit'):
-                print(obj.name)
                 e = sprites.Exit.from_tiled_object(obj)
                 e.add(self.exits)
 

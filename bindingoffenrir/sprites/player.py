@@ -32,6 +32,7 @@ class Player(pg.sprite.Sprite):
         self._last_jump = 0
 
     def set_position(self, x, y):
+        """Assumes coordinates are for the CENTER of the rectangle."""
         self.pos.x = x
         self.pos.y = y
         self.rect.centerx = x

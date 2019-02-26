@@ -125,10 +125,10 @@ def draw_grid(game):
                      (0, y), (settings.WIDTH, y))
 
 
-def draw_rects(game, group):
+def draw_rects(game, group, color=settings.CYAN):
     for s in group:
         rect = game.level.camera.apply_rect(s.rect)
-        pg.draw.rect(game.screen, settings.CYAN, rect, 1)
+        pg.draw.rect(game.screen, color, rect, 1)
         pg.draw.circle(game.screen, settings.RED, rect.center, 3)
         pg.draw.circle(game.screen, settings.GREEN, rect.topleft, 3)
         pg.draw.circle(game.screen, settings.GREEN, rect.topright, 3)

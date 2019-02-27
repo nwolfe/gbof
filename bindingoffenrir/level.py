@@ -33,6 +33,7 @@ class Level:
         self.baddies = None
         self.stairs = None
         self.ground = None
+        self.platforms = None
         self.exits = None
 
     def load(self):
@@ -46,6 +47,7 @@ class Level:
         self.baddies = pg.sprite.Group()
         self.stairs = pg.sprite.Group()
         self.ground = pg.sprite.Group()
+        self.platforms = pg.sprite.Group()
         self.exits = pg.sprite.Group()
         self._create_objects(game)
 
@@ -69,6 +71,9 @@ class Level:
             if obj.name == 'ground':
                 g = sprites.Ground.from_tiled_object(obj)
                 g.add(self.ground)
+            elif obj.name == 'platform':
+                p = sprites.Platform.from_tiled_object(obj)
+                p.add(self.platforms)
             elif obj.name == 'player':
                 player_spawn = (obj.x, obj.y)
             elif obj.name and obj.name.startswith('baddie'):

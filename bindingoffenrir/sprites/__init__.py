@@ -5,3 +5,4 @@ from bindingoffenrir.sprites.player import Player
 from bindingoffenrir.sprites.spritesheet import Spritesheet
 from bindingoffenrir.sprites.stairs import Stairs
 from bindingoffenrir.sprites.exit import Exit
+from bindingoffenrir.sprites.platform import Platform

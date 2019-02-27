@@ -91,7 +91,7 @@ class Game:
     def _next_level(self, next_map, next_exit):
         next_level = self._levels.get(next_map)
         if next_level:
-            next_level.load(settings.SCALE_FACTOR)
+            next_level.load()
             next_level.new(self)
             next_level.place_at_exit(self.player, next_exit)
             self.level = next_level
@@ -109,6 +109,7 @@ class Game:
             debug.draw_rects(self, self.level.all_sprites)
             debug.draw_rects(self, self.level.stairs)
             debug.draw_rects(self, self.level.ground)
+            debug.draw_rects(self, self.level.platforms)
             debug.draw_rects(self, self.level.exits, settings.GREEN)
             debug.draw_stairs(self)
         if debug.draw.version:

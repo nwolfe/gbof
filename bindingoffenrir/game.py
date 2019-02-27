@@ -82,11 +82,19 @@ class Game:
                     debug.draw.points = not debug.draw.points
 
     def update(self):
+        # Update all the objects in the current level
         self.level.update(self)
+
+        # Player exiting the level? Go to the next level
         exit_ = pg.sprite.spritecollideany(self.player, self.level.exits)
         if exit_:
             if exit_.next_map and exit_.next_exit:
                 self._next_level(exit_.next_map, exit_.next_exit)
+
+        # Player fall off the bottom of the level? End the game
+        if self.player.rect.top > settings.HEIGHT:
+            self.player.kill()
+            self.playing = False
 
     def _next_level(self, next_map, next_exit):
         next_level = self._levels.get(next_map)

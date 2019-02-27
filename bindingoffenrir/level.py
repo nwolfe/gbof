@@ -59,14 +59,18 @@ class Level:
     def _create_objects(self, game):
         player_spawn = None
         for obj in self.map.tm.objects:
-            # Scale the object up
-            obj.x *= settings.SCALE_FACTOR
-            obj.y *= settings.SCALE_FACTOR
-            obj.width *= settings.SCALE_FACTOR
-            obj.height *= settings.SCALE_FACTOR
-            # Assume (x,y) is topleft and convert to center
-            obj.x += obj.width / 2
-            obj.y += obj.height / 2
+            # Scale the object up. Mark the object so we don't
+            # scale it again, like when we reload the level.
+            if not obj.properties.get('gbof_scaled', False):
+                obj.properties['gbof_scaled'] = True
+                obj.x *= settings.SCALE_FACTOR
+                obj.y *= settings.SCALE_FACTOR
+                obj.width *= settings.SCALE_FACTOR
+                obj.height *= settings.SCALE_FACTOR
+                # Assume (x,y) is topleft and convert to center
+                obj.x += obj.width / 2
+                obj.y += obj.height / 2
+
             # Construct all the entities
             if obj.name == 'ground':
                 g = sprites.Ground.from_tiled_object(obj)

@@ -78,13 +78,23 @@ class Player(pg.sprite.Sprite):
             stairs = self.stairs
 
         self.rect.centery = self.pos.y
-        _collide_with_objects(self, self._game.level.ground, 'y', stairs)
+        if stairs:
+            _collide_with_objects(self, self._game.level.ground, 'y',
+                                  lambda g: g.rect.colliderect(stairs.rect))
+        else:
+            _collide_with_objects(self, self._game.level.ground, 'y')
+
         self.rect.centerx = self.pos.x
-        _collide_with_objects(self, self._game.level.ground, 'x', stairs)
+        if stairs:
+            _collide_with_objects(self, self._game.level.ground, 'x',
+                                  lambda g: g.rect.colliderect(stairs.rect))
+        else:
+            _collide_with_objects(self, self._game.level.ground, 'x')
 
         # Only collide with platforms when falling onto them
         if self.vel.y > settings.PLAYER_GRAVITY:
-            _collide_with_objects(self, self._game.level.platforms, 'y')
+            _collide_with_objects(self, self._game.level.platforms, 'y',
+                                  lambda p: self.rect.bottom > p.rect.centery)
 
         _collide_with_stairs(self, stairs)
 
@@ -194,12 +204,12 @@ class Player(pg.sprite.Sprite):
         self.rect.center = center
 
 
-def _collide_with_objects(sprite, group, dir, stairs=None):
-    if 'x' == dir:
+def _collide_with_objects(sprite, group, direction, ignore_fn=None):
+    if 'x' == direction:
         hit = pg.sprite.spritecollideany(sprite, group)
         if hit:
-            # Special-case: ignore collisions when on stairs
-            if stairs and hit.rect.colliderect(stairs.rect):
+            # Ignore the collision in certain cases
+            if ignore_fn and ignore_fn(hit):
                 return
 
             # Collision with left side of object
@@ -216,11 +226,11 @@ def _collide_with_objects(sprite, group, dir, stairs=None):
                     sprite.rect.left = hit.rect.right
                     sprite.vel.x = 0
                     sprite.pos.x = sprite.rect.centerx
-    elif 'y' == dir:
+    elif 'y' == direction:
         hit = pg.sprite.spritecollideany(sprite, group)
         if hit:
-            # Special-case: ignore collisions when on stairs
-            if stairs and hit.rect.colliderect(stairs.rect):
+            # Ignore the collision in certain cases
+            if ignore_fn and ignore_fn(hit):
                 return
 
             # Collision with top of object

@@ -40,15 +40,13 @@ class Game:
 
     def _load_data(self):
         self._levels = level.get_all()
-        self.level = self._levels.first()
-        # self.level = level.get_sample()
-        self.level.load()
         images.ALL.load()
 
     def new(self):
         self.paused = False
         self.player = sprites.Player(self)
-        # self.level = self._levels.first()
+        self.level = self._levels.first()
+        self.level.load()
         self.level.new(self)
 
     def run(self):

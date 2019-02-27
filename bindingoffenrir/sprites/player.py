@@ -77,19 +77,18 @@ class Player(pg.sprite.Sprite):
         else:
             stairs = self.stairs
 
-        self.rect.centery = self.pos.y
         if stairs:
-            _collide_with_objects(self, self._game.level.ground, 'y',
-                                  lambda g: g.rect.colliderect(stairs.rect))
+            def ignore(ground):
+                return ground.rect.colliderect(stairs.rect)
+            ignore_fn = ignore
         else:
-            _collide_with_objects(self, self._game.level.ground, 'y')
+            ignore_fn = None
+
+        self.rect.centery = self.pos.y
+        _collide_with_objects(self, self._game.level.ground, 'y', ignore_fn)
 
         self.rect.centerx = self.pos.x
-        if stairs:
-            _collide_with_objects(self, self._game.level.ground, 'x',
-                                  lambda g: g.rect.colliderect(stairs.rect))
-        else:
-            _collide_with_objects(self, self._game.level.ground, 'x')
+        _collide_with_objects(self, self._game.level.ground, 'x', ignore_fn)
 
         # Only collide with platforms when falling onto them
         if self.vel.y > settings.PLAYER_GRAVITY:

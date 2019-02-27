@@ -35,6 +35,7 @@ class Level:
         self.ground = None
         self.platforms = None
         self.exits = None
+        self.spikes = None
 
     def load(self):
         self.map = tilemap.TiledMap(self._filename, settings.SCALE_FACTOR)
@@ -49,6 +50,7 @@ class Level:
         self.ground = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.exits = pg.sprite.Group()
+        self.spikes = pg.sprite.Group()
         self._create_objects(game)
 
     def place_at_exit(self, player, exit_name):
@@ -89,6 +91,9 @@ class Level:
             elif obj.name and obj.name.startswith('exit'):
                 e = sprites.Exit.from_tiled_object(obj)
                 e.add(self.exits)
+            elif obj.name == 'spike':
+                s = sprites.Spikes.from_tiled_object(obj)
+                s.add(self.spikes)
 
         # Start player at the first exit by default
         if player_spawn is None:

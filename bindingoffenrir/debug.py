@@ -24,6 +24,7 @@ def draw_all(game):
         _draw_rects(game, game.level.ground)
         _draw_rects(game, game.level.platforms)
         _draw_rects(game, game.level.exits, settings.GREEN)
+        _draw_rects(game, game.level.spikes, settings.RED)
         _draw_stairs(game)
     if draw.version:
         _draw_version(game)

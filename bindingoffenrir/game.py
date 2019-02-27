@@ -94,6 +94,12 @@ class Game:
             self.player.kill()
             self.playing = False
 
+        # Player hit some spikes? End the game
+        hit = pg.sprite.spritecollideany(self.player, self.level.spikes)
+        if hit:
+            self.player.kill()
+            self.playing = False
+
     def _next_level(self, next_map, next_exit):
         next_level = self._levels.get(next_map)
         if next_level:

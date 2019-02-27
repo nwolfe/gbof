@@ -102,22 +102,7 @@ class Game:
 
         self.screen.fill(settings.BGCOLOR)
         self.level.draw(self.screen)
-
-        if debug.draw.grid:
-            debug.draw_grid(self)
-        if debug.draw.hitboxes:
-            debug.draw_rects(self, self.level.all_sprites)
-            debug.draw_rects(self, self.level.stairs)
-            debug.draw_rects(self, self.level.ground)
-            debug.draw_rects(self, self.level.platforms)
-            debug.draw_rects(self, self.level.exits, settings.GREEN)
-            debug.draw_stairs(self)
-        if debug.draw.version:
-            debug.draw_version(self)
-        if debug.draw.physics:
-            debug.draw_physics(self, [self.player])
-        if debug.draw.points:
-            debug.draw_points(self, [self.player])
+        debug.draw_all(self)
 
         if self.paused:
             self.screen.blit(self.dim_screen, (0, 0))

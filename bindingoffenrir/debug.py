@@ -3,7 +3,7 @@ import bindingoffenrir.settings as settings
 import bindingoffenrir.version as version
 
 
-class _flags:
+class _Flags:
     def __init__(self):
         self.grid = False
         self.hitboxes = False
@@ -12,10 +12,28 @@ class _flags:
         self.version = False
 
 
-draw = _flags()
+draw = _Flags()
 
 
-def draw_points(game, group):
+def draw_all(game):
+    if draw.grid:
+        _draw_grid(game)
+    if draw.hitboxes:
+        _draw_rects(game, game.level.all_sprites)
+        _draw_rects(game, game.level.stairs)
+        _draw_rects(game, game.level.ground)
+        _draw_rects(game, game.level.platforms)
+        _draw_rects(game, game.level.exits, settings.GREEN)
+        _draw_stairs(game)
+    if draw.version:
+        _draw_version(game)
+    if draw.physics:
+        _draw_physics(game, [game.player])
+    if draw.points:
+        _draw_points(game, [game.player])
+
+
+def _draw_points(game, group):
     size = 12
     font = pg.font.SysFont('Arial', size, bold=False)
     color = settings.GREEN
@@ -58,7 +76,7 @@ def draw_points(game, group):
         game.screen.blit(surf, r)
 
 
-def draw_physics(game, group):
+def _draw_physics(game, group):
     size = 12
     font = pg.font.SysFont('Arial', size, bold=False)
     color = settings.GREEN
@@ -107,16 +125,16 @@ def draw_physics(game, group):
         game.screen.blit(surf, r)
 
 
-def draw_version(game):
-    builddate = "Built: %s" % version.BUILD_DATE
+def _draw_version(game):
+    build_date = "Built: %s" % version.BUILD_DATE
     font = pg.font.SysFont('Arial', 16, bold=True)
-    surface = font.render(builddate, True, settings.GREEN)
+    surface = font.render(build_date, True, settings.GREEN)
     rect = surface.get_rect()
     rect.topleft = (0, 0)
     game.screen.blit(surface, rect)
 
 
-def draw_grid(game):
+def _draw_grid(game):
     for x in range(0, settings.WIDTH, settings.TILESIZE):
         pg.draw.line(game.screen, settings.LIGHTGREY,
                      (x, 0), (x, settings.HEIGHT))
@@ -125,7 +143,7 @@ def draw_grid(game):
                      (0, y), (settings.WIDTH, y))
 
 
-def draw_rects(game, group, color=settings.CYAN):
+def _draw_rects(game, group, color=settings.CYAN):
     for s in group:
         rect = game.level.camera.apply_rect(s.rect)
         pg.draw.rect(game.screen, color, rect, 1)
@@ -136,7 +154,7 @@ def draw_rects(game, group, color=settings.CYAN):
         pg.draw.circle(game.screen, settings.GREEN, rect.bottomright, 3)
 
 
-def draw_stairs(game):
+def _draw_stairs(game):
     for s in game.level.stairs:
         rect = game.level.camera.apply_rect(s.rect)
         if s.is_right:
